@@ -1,0 +1,27 @@
+<div style="background-color:#FFFFFF;height:330px"> 
+<?php
+$ProfileHolder=true;
+$UserName=ucwords($NameRow->Name).' is';
+if($ProfileHolder) $UserName='I am';
+echo '<div id="my-dbees"><div class="user-name" style="margin-bottom:15px">'.$UserName.' follower</div><div class="next-line"></div><div>';     
+ 
+echo '<div id="mydbcontrols"></div>';
+
+if(count($followingdbees)>0) {
+	$counter=1;
+	foreach($followingdbees as $Row):
+		$return.='<a href="profile.php?user='.$Row->UserID.'" target="_top"><div class="follower-box-auto"><img src="show_thumbnails.php?ImgName='.$Row->ProfilePic.'&ImgLoc=userpics&Width=95&Height=95" border="0" /><br /><div style="width:95px">'.$Row->Name.'</div></div></a>';
+		if($counter%5==0) $return.='<div class="next-line"></div>';
+		$counter++;
+	endforeach;
+}
+else {
+	$return.=$UserName.' currently not following anyone.';
+}
+$return.='<br style="clear:both; font-zise:1px" /></div></div>';
+
+echo $return;
+
+
+?>
+</div>

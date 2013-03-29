@@ -1,0 +1,89 @@
+<!-- This script used for chack unoque email Id of new register user -->
+<script>
+function checkEmail(email){ 
+	var email = email.trim();
+	var url = '<?php echo $this->url(array('controller'=>'Registration','action'=>'checkuniqueemail','page'=>$this->page),'default',true);?>/ckemail/'+ email;
+	$.ajax({
+		  url: url ,
+		 
+		  success: function( data ) {
+			
+		  	if(data){
+				$("#unique").html(data);
+				$("#email").val('');
+			}else{
+				$("#unique").html('');
+			}
+		  }
+	});
+	
+}
+function checkUserId(userid){ 
+	var userid = userid.trim();
+	var url = '<?php echo $this->url(array('controller'=>'Registration','action'=>'checkuniqueuserid','page'=>$this->page),'default',true);?>/ckuid/'+ userid;
+	$.ajax({
+		  url: url ,
+		 
+		  success: function( data ) {
+			
+		  	if(data){
+				$("#uniqueid").html(data);
+				$("#userid").val('');
+			}else{
+				$("#uniqueid").html('');
+			}
+		  }
+	});
+	
+}
+//////////////////   Number validation /////////////
+function isNumberKey(evt)
+{
+         var charCode = (evt.which) ? evt.which : event.keyCode
+         
+         if (charCode > 31 && charCode > 46 && (charCode < 48 || charCode > 57))
+            return false;
+
+         return true;
+}
+</script><script src="<?php echo $this->baseUrl();?>/js/validation.js" type="text/javascript"></script>
+ <style>
+#passwordStrength1{height:10px;display:block;float:left;border:1px #666 solid;min-width:200px;background:#F4F4F4;margin-left: 5px;margin-top:5px;}
+#passwordStrength{height:10px;display:block;float:left;}
+</style>
+<div id="main" class="heightAuto">
+    	<!-- register starts -->
+		<!-- Signup form start here -->
+	<form name="myform" action="<?php echo $this->url(array('controller'=>'index','action'=>'signup','page'=>$this->page),'default',true)  ?>" method="post" onsubmit="return checkUser();">
+    	<div id="LandingSignup">
+		<div class="titleClass" style="margin-bottom:20px;"><?php echo $this->escape($this->title); ?></div>
+		<div class="formLabel"><?php echo $this->escape($this->label_fname); ?></div><div class="fieldClass">
+		<?php echo $this->form->fullname;?><?php // echo $this->formInput($form->get('fullname')) ?>
+		<?php // echo $this->formElementErrors($form->get('Username')) ?>
+		</div>
+		<div style="clear:both"></div>
+		<div class="formLabel"><?php echo $this->escape($this->label_uname); ?></div><div class="fieldClass"><?php echo $this->form->username;?></div>
+		<div style="clear:both"></div>
+		<div class="formLabel"><?php echo $this->escape($this->label_email); ?></div><div class="fieldClass"><?php echo $this->form->email;?></div>
+		<div style="clear:both"></div>
+		<div style="clear:both"></div>
+		<div class="formLabel"><?php echo $this->escape($this->label_pass); ?></div><div class="fieldClass"><?php echo $this->form->Password;?></div>
+		<div style="clear:both"></div>
+		<div class="formLabel"><?php echo $this->escape($this->label_gender); ?></div><div class="fieldClass"><?php echo $this->form->gender;?></div>
+		<div style="clear:both"></div>
+		<div class="formLabel"><?php echo $this->escape($this->label_birthday); ?></div><div class="fieldClass"><?php echo $this->form->birthday;?></div>
+		<div style="clear:both"></div>
+		<div class="formLabel"><?php // echo $this->escape($this->label_captcha); ?></div><div class="fieldClass"><?php echo $this->form->captcha;?></div>
+		<div style="clear:both"></div>
+		<div style="margin-left:105px;"><a href="javascript:void(0);" onclick="javascript:openwhybirthday();">Why do I need to provide my birthday?</a></div>
+		<div style="clear:both"></div>
+		<div class="formLabel"></div>
+		<div class="fieldClass" style="margin-top:10px;"><input id="termscheck" type="checkbox">&nbsp;<a href="javascript:void(0);" onclick="javascript:openterms();">I accept terms and conditions</a></div>
+		<div style="clear:both"></div>
+		<div style="width:150px; height:10px; margin-left:115px; float:left; padding-top:8px;"><div id="SignupErr">All fields mandatory</div><div id="signuploader" style="display:none; float:right; padding-top:13px; padding-right:10px;"><img src="images/ajaxloader.gif" border="0"></div></div>
+		<div class="button" style="margin-left:10px; margin-top:10px; margin-bottom:20px; float:left;" onclick="javascript:signup()">join in</div>
+	</div>
+</form>	 <!-- signup form end here -->
+    </div>
+
+<!-- ** End secondary area ** -->

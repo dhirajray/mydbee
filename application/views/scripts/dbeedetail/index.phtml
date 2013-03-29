@@ -1,0 +1,470 @@
+<?php
+$loggedin=true;
+if(!$_COOKIE['user']) $loggedin=false;
+if($loggedin) $userloggedin='1'; else $userloggedin='0';
+$userid = $_COOKIE['user'];
+//$cookieuser = $userid;
+//$userid = $_SESSION['UserID'];
+$dbeeUser = $this->row['User'];
+$row = $this->row;
+$userStatus = $this->row->Status;
+$imgH = '130px';
+$db = $this->db;
+if($this->db=='') $db=0;
+$user=$this->row->UserID;
+setcookie("LastCommentSeenDate", date('Y-m-d H:i:s'), time()+3600);
+$return='';
+$video=false;
+$audio=false;
+$isPoll=0;
+if($userid==$dbeeUser)
+{ 
+	$ProfileHolder=true;
+}else{ 
+	$ProfileHolder=false;
+}
+
+if(!$ProfileHolder && $loggedin) {
+	if($followedby) {$follow=1;$followstring="unfollow";}
+	else {$follow=0;$followstring="follow";}
+}
+else $follow=-1;
+//if($_SESSION['UserID']) {
+		$ago.= $this->agohelper($this->escape($row['PostDate']));
+		// CALCULATE DBEE AGE
+		if(strlen($ProfileUser)>15) $smallfont=' font-size:14px;'; else $smallfont='';
+		// CALCULATE PROFILE PIC DIMENTIONS FOR IMAGE DIV
+		if($this->TotalComments>0) $commentsText=$this->TotalComments.' comments';
+		else $commentsText=$this->TotalComments.' comment';
+		// INITIALIZE SCORE DBEE DIV
+		// INITIALIZE SCORE DBEE DIV
+		$scoreDiv='<div><div style="width:450px;">';			
+		if($userid==$dbeeUser) {			
+			$scoreDiv.='<div id="dbee-score" style="float:left; margin:5px 40px 0 20px;">db tally</div>';
+			$scoreDiv.='<div style="margin:0 5px 0 0;"><span id="loveTotalDB" style="float:left">'.$this->totalLove.'</span><div id="love-dbee" style="float:left; cursor:default; margin-left:-8px;"></div></div><div style="margin-left:50px;"><span id="likeTotalDB" style="float:left">'.$this->totalLike.'</span><div id="like-dbee" style="float:left; cursor:default; margin-left:-8px;"></div></div><div style="margin-left:50px;"><span id="philosopherTotalDB" style="float:left">'.$this->totalPhil.'</span><div id="philosopher-dbee" style="float:left; cursor:default; margin-left:-8px;"></div></div><div style="margin-left:50px;"><span id="dislikeTotalDB" style="float:left">'.$this->totalDislike.'</span><div id="dislike-dbee" style="float:left; cursor:default; margin-left:-8px;"></div></div><div style="margin-left:50px;"><span id="hateTotalDB" style="float:left;">'.$this->totalHate.'</span><div id="hate-dbee" style="float:left; cursor:default; margin-left:-8px;"></div></div></div></div></div></div><br style="clear:both;" />';
+			$followDiv='';			
+		}
+		else 
+		{		
+		//	$scoreDiv.='<div id="dbee-score" style="float:left; margin:5px 40px 0 20px;"></div>';
+			$scoreDiv.='<div id="dbee-score" style="float:left; margin:5px 25px 0 20px;">click & score</div>';
+			$scoreDiv.='<div style="margin:0 5px 0 0;"><span id="loveTotalDB" style="float:left">'.$this->totalLove.'</span><div id="love-dbee" style="float:left; margin-left:-8px;" onclick="javascript:scoredbee(1,\'love\',1,'.$db.');"></div></div><div style="margin-left:50px;"><span id="likeTotalDB" style="float:left">'.$this->totalLike.'</span><div id="like-dbee" style="float:left; margin-left:-8px;" onclick="javascript:scoredbee(2,\'like\',1,'.$db.');"></div></div><div style="margin-left:50px;"><span id="philosopherTotalDB" style="float:left">'.$this->totalPhil.'</span><div id="philosopher-dbee" style="float:left; margin-left:-8px;" onclick="javascript:scoredbee(3,\'philosopher\',1,'.$db.');"></div></div><div style="margin-left:50px;"><span id="dislikeTotalDB" style="float:left">'.$this->totalDislike.'</span><div id="dislike-dbee" style="float:left; margin-left:-8px;" onclick="javascript:scoredbee(4,\'dislike\',1,'.$db.');"></div></div><div style="margin-left:50px;"><span id="hateTotalDB" style="float:left;">'.$this->totalHate.'</span><div id="hate-dbee" style="float:left; margin-left:-8px;" onclick="javascript:scoredbee(5,\'hate\',1,'.$db.');"></div></div></div></div></div></div><br style="clear:both;" />';
+			$followDiv='<a href="javascript:void(0)" rel="follow-popup~300" class="poplight" onclick="javascript:followme('.$dbeeUser.');"><div id="follow-user" class="follow-user" style="margin:10px 0 0 15px; font-size:14px; float:left;"><div id="followme-label" style="width:85px; padding-top:10px; margin-left:25px; text-align:center; font-size:12px;">'.$followstring.'</div></div></a>';
+			
+		}
+		// INITIALIZE SCORE DBEE DIV
+
+		if($loggedin) {
+			$reportabuse='&nbsp;&nbsp;&nbsp;<a href="javascript:void(0);" class="dbee-feed-titlebar-smallFont" style="font-weight:normal" onclick="javascript:OpenShadowbox(\'reportabuse.php?db='.$db.'&type=1\',\'\',\'300\',\'400\');">report abuse</a> | <a href="javascript:void(0);" class="dbee-feed-titlebar-smallFont" style="font-weight:normal" onclick="javascript:OpenShadowbox(\'reportabug.php?db='.$db.'\',\'\',\'330\',\'450\');">report a bug</a>';
+			if($ProfileHolder && $TotalComments==0) $reportabuse.=' | <a href="javascript:void(0);" class="dbee-feed-titlebar-smallFont" style="font-weight:normal" onclick="javascript:openeditdbee();"><span id="edit-db">edit db</span></a>&nbsp;&nbsp;&nbsp;<span id="msg-db-updated">Dbee Updated</span>';
+		}
+			else $reportabuse='';
+			
+		// SOCIAL ICONS
+		$social='';
+		if($row['SocialFB']!='' || $row['SocialTwitter']!='' || $row['SocialLinkedin']!='') $social.='<div align="center" style="text-align:center; margin:10px 10px 0 0;"><div style="margin-bottom:5px; font-size:12px">My other social links</div><div class="next-line"></div>';
+		if($row['SocialFB']!='')
+			$social.='<a href="'.$row['SocialFB'].'" target="_blank"><div class="profilesocial-fb" style="margin-right:5px"></div></a>';
+		if($row['SocialTwitter']!='')
+			$social.='<a href="http://twitter.com/'.$row['SocialTwitter'].'" target="_blank"><div class="profilesocial-twitter" style="margin-right:5px"></div></a>';
+		if($row['SocialLinkedin']!='')
+			$social.='<a href="'.$row['SocialFB'].'" target="_blank"><div class="profilesocial-linkedin"></div></a>';
+		if($row['SocialFB']!='' || $row['SocialTwitter']!='' || $row['SocialLinkedin']!='') $social.='</div>';
+		// SOCIAL ICONS
+
+		$showLinks=true;
+		/* $userStatusRow=mysql_fetch_object(mysql_query("select Status from tblUsers WHERE UserID=".$row['User,$conn)); */
+		$userStatus=$row['Status'];
+		$profileLinkStart='<a href="profile.php?user='.$row['User'].'">'; 
+	
+
+		if($row['Type']=='1') {
+			$dbeeType=1;
+			if($row['RssFeed']!='') $rssfeed='<div class="dbRssWrapper dbRssWrapperMain" style="background-color:#FFFFCC; display:block; margin:10px 0 0 0"><div class="icon_rssbtn"></div>'.$row['RssFeed'].'</div>';
+			else $rssfeed='';
+			$dbee_highlighted='<div class="maindb-user-infobox"><div class="small-font-bold">'.$row['Name'].'</div>'.$profileLinkStart.'<div style="margin:10px 0px 10px 0px; width:130px; height:'.$imgH.'; background-image:url('.BASE_URL.'/show_thumbnails.php?ImgName='.$row['ProfilePic'].'&ImgLoc=userpics&Width=130&Height=130); background-repeat:no-repeat; background-position:center"></div></a>';
+			if($showLinks)
+				$dbee_highlighted.='<div><a href="profile.php?user='.$row['User'].'" class="small-link">history</a> | <a href="profile.php?user='.$row['User'].'" class="small-link">bio</a> | <a href="javascript:void(0)" onclick="javascript:OpenShadowbox(\'leaguepopup.php?user='.$row['User'].'\',\'\',\'600\',\'710\');" class="small-link">rankings</a></div>';
+			$dbee_highlighted.=$social.'</div><div class="maindb-db-infobox"><div class="small-font-bold" style="margin:0 0 10px 20px;">'.$ago.'&nbsp;&nbsp;&nbsp;<span id="total_comments">'.$commentsText.'</span>'.$reportabuse.'</div><div style="margin-left:10px"><div class="maindb-speecharrow"></div><div class="maindb-text-wrapper"><div class="maindb-type-text"></div><div class="maindb-text" style="float:left; width:665px; margin-left:10px;"><div id="non-editable" style="margin-bottom:15px">'.$row['Text'].'</div><div id="editable" style="margin-bottom:15px"><div><textarea id="PostText" class="roundedge-textbox fieldtext" style="width:500px; height:100px; margin-top:5px;" onKeyDown="limitText(\'PostText\',500,\'dbtextcountdown\');" onKeyUp="limitText(\'PostText\',500,\'dbtextcountdown\');" onblur="javascript:editdbee()">'.$row['Text'].'</textarea></div><div class="next-line"></div><div id="dbtextcountdown" class="dbtextcountdown" style="margin:5px; color:#000; font-size:12px">500 limit</div></div><div class="next-line"></div>'.$rssfeed.'<div class="next-line"></div><div class="maindb-addtofav"><a href="javascript:void(0)" rel="favourite-popup~300" class="poplight small-link" onclick="javascript:addtofavourite('.$row['DbeeID'].','.$row['User'].')" alt="add to favourites" title="add to favourites">add to favourites</a></div><div class="twitterbird-dbee-feed" style="float:left; margin-top:15px"><div class="twittertag-maindbee">'.$row['TwitterTag'].'</div></div></div></div></div></div><div>'.$followDiv.'<div id="maindb-scorewrapper" style="float:right; margin-right:2px;"><div class="maindb-score-speecharrow"></div><div class="maindb-score">'.$scoreDiv.'</div></div></div><br style="clear:both; font-size:1px;">';
+		}
+		elseif($row['Type']=='2') {
+			$dbeeType=2;
+			$dbee_highlighted='<div class="maindb-user-infobox"><div class="small-font-bold">'.$row['display_name'].'</div>'.$profileLinkStart.'<div style="margin:10px 0px 10px 0px; width:130px; height:'.$imgH.'; background-image:url('.BASE_URL.'/show_thumbnails.php?ImgName='.$row['ProfilePic'].'&ImgLoc=userpics&Width=130&Height=130); background-repeat:no-repeat; background-position:center"></div></a>';
+			if($showLinks)
+				$dbee_highlighted.='<div><a href="#" class="small-link">history</a> | <a href="#" class="small-link">bio</a> | <a href="#" class="small-link">rankings</a></div>';
+			$dbee_highlighted.=$social.'</div><div class="maindb-db-infobox"><div class="small-font-bold" style="margin:0 0 10px 20px;">'.$ago.'&nbsp;&nbsp;&nbsp;<span id="total_comments">'.$commentsText.'</span>'.$reportabuse.'</div><div style="margin-left:10px"><div class="maindb-speecharrow"></div><div class="maindb-text-wrapper"><div class="maindb-type-link"></div><div class="maindb-text" style="float:left; width:665px; margin-left:10px;"><div id="non-editable" style="margin-bottom:15px">'.$row['UserLinkDesc'].'</div><div id="editable" style="margin-bottom:15px"><textarea id="PostLinkDesc" class="dbee-post-textarea" style="height:50px; width:490px; margin-top:0;" onKeyDown="limitText(\'PostLinkDesc\',500,\'dblinkcountdown\');" onKeyUp="limitText(\'PostLinkDesc\',500,\'dblinkcountdown\');" onblur="javascript:editdbee()">'.$row['UserLinkDesc'].'</textarea><br /><div id="dblinkcountdown" class="dbtextcountdown">500 limit</div><br /></div><div style="font-weight:bold">'.$row['LinkTitle'].'</div><div><a href="'.$row['Link'].'" target="_blank">'.$row['Link'].'</a></div><div style="margin-top:10px;">'.$row['LinkDesc'].'</div><div class="maindb-addtofav"><a href="javascript:void(0)" rel="favourite-popup~300" class="poplight small-link" onclick="javascript:addtofavourite('.$row['DbeeID'].','.$row['User'].')" alt="add to favourites" title="add to favourites">add to favourites</a></div><div class="twitterbird-dbee-feed" style="float:left; margin-top:15px"><div class="twittertag-maindbee">'.$row['TwitterTag'].'</div></div></div></div></div></div><div>'.$followDiv.'<div id="maindb-scorewrapper" style="float:right; margin-right:15px;"><div class="maindb-score-speecharrow"></div><div class="maindb-score">'.$scoreDiv.'</div></div></div><br style="clear:both; font-size:1px;">';
+		}
+		elseif($row['Type']=='3') {
+			$dbeeType=3;
+			$dbee_highlighted='<div class="maindb-user-infobox"><div class="small-font-bold">'.$row['display_name'].'</div>'.$profileLinkStart.'<div style="margin:10px 0px 10px 0px; width:130px; height:'.$imgH.'; background-image:url('.BASE_URL.'/show_thumbnails.php?ImgName='.$row['ProfilePic'].'&ImgLoc=userpics&Width=130&Height=130); background-repeat:no-repeat; background-position:center"></div></a>';
+			if($showLinks)
+				$dbee_highlighted.='<div><a href="#" class="small-link">history</a> | <a href="#" class="small-link">bio</a> | <a href="#" class="small-link">rankings</a></div>';
+			$dbee_highlighted.=$social.'</div><div class="maindb-db-infobox"><div class="small-font-bold" style="margin:0 0 10px 20px;">'.$ago.'&nbsp;&nbsp;&nbsp;<span id="total_comments">'.$commentsText.'</span>'.$reportabuse.'</div><div style="margin-left:10px"><div class="maindb-speecharrow"></div><div class="maindb-text-wrapper"><div class="maindb-type-pix"></div><div class="maindb-text" style="float:left; width:665px; margin-left:10px;"><div><div style="width:auto; padding:3px; border:1px solid #FFF; float:left; margin-right:10px;"><a href="imageposts/'.$row['Pic'].'" rel="shadowbox"><img src="'.BASE_URL.'/show_thumbnails.php?ImgName='.$row['Pic'].'&ImgLoc=imageposts&Width=120&Height=120" border="0" /></a></div><div id="non-editable" style="float:left; width:520px;">'.nl2br($row['PicDesc']).'</div><div id="editable"><textarea id="PostPixDesc" class="dbee-post-textarea" style="height:50px; width:490px; margin-top:0;" onKeyDown="limitText(\'PostPixDesc\',500,\'dbpixcountdown\');" onKeyUp="limitText(\'PostPixDesc\',500,\'dbpixcountdown\');" onblur="javascript:editdbee()">'.$row['PicDesc'].'</textarea><br /><div id="dbpixcountdown" class="dbtextcountdown" style="margin:5px; font-size:12px">500 limit</div></div></div><div class="next-line"></div><div class="maindb-addtofav"><a href="javascript:void(0)" rel="favourite-popup~300" class="poplight small-link" onclick="javascript:addtofavourite('.$row['DbeeID'].','.$row['User'].')" alt="add to favourites" title="add to favourites">add to favourites</a></div><div class="twitterbird-dbee-feed" style="float:left; margin-top:15px"><div class="twittertag-maindbee">'.$row['TwitterTag'].'</div></div></div></div></div></div><div>'.$followDiv.'<div id="maindb-scorewrapper" style="float:right; margin-right:15px;"><div class="maindb-score-speecharrow"></div><div class="maindb-score">'.$scoreDiv.'</div></div></div><br style="clear:both; font-size:1px;">';
+		}
+		elseif($row['Type']=='4') {
+			$dbeeType=4;
+			if($row['Vid']!='') {
+				$video=true;
+				if($row['VidSite']=='Youtube')
+					$VideoThumbnail='<img src="http://i.ytimg.com/vi/'.$row['VidID'].'/0.jpg" width="120" height="100" border="0" />';
+				elseif($row['VidSite']=='Vimeo')
+				{
+					$url = 'http://vimeo.com/api/v2/video/'.$row['VidID'].'.php';
+					$contents = @file_get_contents($url);
+					$thumb = @unserialize(trim($contents));
+		
+					$VideoThumbnail="<img src=".$thumb[0][thumbnail_small].">";
+				}
+				elseif($row['VidSite']=='Dailymotion')
+					$VideoThumbnail='<img src="http://www.dailymotion.com/thumbnail/video/'.$row['VidID'].'" width="120" height="100" border="0" />';
+			} else {
+				$audio=true;
+				$VideoThumbnail=$row['Audio'];
+			}
+			
+			$dbee_highlighted='<div class="maindb-user-infobox"><div class="small-font-bold">'.$row['Name'].'</div>'.$profileLinkStart.'<div style="margin:10px 0px 10px 0px; width:130px; height:'.$imgH.'; background-image:url('.BASE_URL.'/show_thumbnails.php?ImgName='.$row['ProfilePic'].'&ImgLoc=userpics&Width=130&Height=130); background-repeat:no-repeat; background-position:center"></div></a>';
+			if($showLinks)
+				$dbee_highlighted.='<div><a href="#" class="small-link">history</a> | <a href="#" class="small-link">bio</a> | <a href="#" class="small-link">rankings</a></div>';
+			$dbee_highlighted.=$social.'</div><div class="maindb-db-infobox"><div class="small-font-bold" style="margin:0 0 10px 20px;">'.$ago.'&nbsp;&nbsp;&nbsp;<span id="total_comments">'.$commentsText.'</span>'.$reportabuse.'</div><div style="margin-left:10px"><div class="maindb-speecharrow"></div><div class="maindb-text-wrapper"><div class="maindb-type-vidz"></div><div class="maindb-text" style="float:left; width:705px; margin-left:10px;"><div>';
+			if($video)
+				$dbee_highlighted.='<div class="icon-youtube" style="float:none; height:30px;"></div><div style="margin-top:5px; width:120px; padding:3px; border:1px solid #FFF; margin-right:10px; float:left;"><a href="javascript:seevideo(\''.$row['VidID'].'\');">'.$VideoThumbnail.'</a></div><div id="non-editable" style="float:left; width:550px;">'.$row['VidDesc'].'</div>';
+			elseif($audio)
+				$dbee_highlighted.='<div class="icon-soundcloud" style="float:none; height:30px;"></div><div style="margin-top:5px; border:3px solid #F9C10C">'.$row['Audio'].'</div><div id="non-editable" style="width:705px; margin-top:10px">'.$row['VidDesc'].'</div>';
+			
+			$dbee_highlighted.='<div id="editable"><textarea id="PostVidzDesc" class="dbee-post-textarea" style="height:50px; width:490px; margin-top:0;" onKeyDown="limitText(\'PostVidzDesc\',500,\'dbvidzcountdown\');" onKeyUp="limitText(\'PostVidzDesc\',500,\'dbvidzcountdown\');" onblur="javascript:editdbee();">'.$row['VidDesc'].'</textarea><br /><div id="dbvidzcountdown" class="dbtextcountdown" style="margin:5px; font-size:12px">500 limit</div></div></div><div class="next-line"></div><div class="maindb-addtofav"><a href="javascript:void(0)" rel="favourite-popup~300" class="poplight small-link" onclick="javascript:addtofavourite('.$row['DbeeID'].','.$row['User'].')" alt="add to favourites" title="add to favourites">add to favourites</a></div><div class="twitterbird-dbee-feed" style="float:left; margin-top:15px;"><div class="twittertag-maindbee">'.$row['TwitterTag'].'</div></div></div></div></div></div><div>'.$followDiv.'<div id="maindb-scorewrapper" style="float:right; margin-right:15px;"><div class="maindb-score-speecharrow"></div><div class="maindb-score">'.$scoreDiv.'</div></div></div><br style="clear:both; font-size:1px;">';
+		}
+		elseif($row['Type']=='5') {
+			$myvoterow= $this->myvoterow;
+			$cntr = 1;
+			$dbeeType=5;
+			$isPoll = 1;			
+			foreach($this->poRes as $pollrow):			
+			 ${'pollopt'.$cntr}=$pollrow['OptionText'];
+			 ${'pollopt'.$cntr.'num'}=$this->Polloptionlhelper($db,$pollrow['ID'],$userid);
+			$cntr++;
+			endforeach;			
+			$totalvotesexist = $this->totalvotesexist;
+				
+			//$dbee_highlighted.=$this->Polldetailhelper($row);
+			echo $this->Polldetailhelper($row,$scoreDiv,$followstring,$followDiv,$ago);			
+		}		
+		if($row['Type']!='5') { // IF THIS IS NOT A POLL
+			// BUILD REPLY BOX
+			if(!$requestGroup) {
+				$dbee_reply="<div class='dbee-reply-wrapper'>";
+				if($loggedin)
+					$dbee_reply.="<div style='float:left;'><img src='.BASE_URL.'/show_thumbnails.php?ImgName=".$ro['ProfilePic']."&ImgLoc=userpics&Width=65&Height=65'></div>";
+				else
+					$dbee_reply.="<div style='float:left;'><img src='.BASE_URL.'/show_thumbnails.php?ImgName=default-avatar.jpg&ImgLoc=userpics&Width=65&Height=65'></div>";
+				$dbee_reply.="<div class='db-reply-speecharrow-wrapper'><div class='dbreply-speecharrow'></div><div class='db-reply-content-wrapper'><div><div style='float:left; margin:-5px 0 5px 0;'><div id='dbreply-icon-text' onclick=\"javascript:showreplyoption('text')\"></div><div id='dbreply-icon-link' onclick=\"javascript:showreplyoption('link')\"></div><div id='dbreply-icon-pix' onclick=\"javascript:showreplyoption('pix')\"></div><div id='dbreply-icon-vidz' onclick=\"javascript:showreplyoption('vidz')\"></div></div><div style='float:right'><div id='dbcommentcountdown' class='dbtextcountdown' style='float:left'>500 limit</div></div></div><div class='next-line'></div><div class='dbee-reply-textarea-wrapper-noborder'>";
+				// *******************
+				// DB REPLY TEXT
+				$dbee_reply.="<div id='dbreply-text'><div id='dbee-reply-textarea-wrapper' class='dbee-reply-textarea-wrapper'><textarea id='dbee_comment' class='dbee-reply2' onKeyDown='limitText(\"dbee_comment\",500,\"dbcommentcountdown\");' onkeyup='expandtext(this); limitText(\"dbee_comment\",500,\"dbcommentcountdown\");' onfocus='if(this.value == \"have your say...\") { this.value = \"\"; }; toggledbreplywrapper();' onblur='if(this.value == \"\") { this.value = \"have your say...\"; }; toggledbreplywrapper();'>have your say...</textarea></div></div>";
+				// *******************
+				// DB REPLY LINK
+				$dbee_reply.='<div id="dbreply-link" style="display:none"><div style="position:relative;"><div style="float:left; width:520px;"><div style="float:left"><input type="text" id="PostLink" class="roundedge-textbox smallfont" style="width:420px;" onfocus="if(this.value == \'paste link here\') { this.value = \'\'; }; document.getElementById(\'attachlinkerror\').style.display=\'none\';" onblur="if(this.value == \'\') { this.value = \'paste link here\'; }" value="paste link here"></div><div class="button-yellow" style="margin:4px 0 0 10px" onclick="javascript:attachlinkdbee()">attach</div><div class="next-line"></div>
+				<div align="center" id="attachlinkloader" style="display:none; padding-top:10px;"><img src="images/ajaxloader.gif" border="0" /></div>
+				<div align="center" id="attachlinkerror" class="error-dbeelink" style="display:none; margin-left:5px;"><div class="link-post-error-arrow" style="margin-left:5px;"></div><div id="attachlinkerror-text" style="position:relative;">The website address was not found</div></div>
+				<div class="next-line"></div>
+				<div id="LinkInfoWrapper" style="margin-top:10px; padding:10px;">
+				<div id="LinkInfo"></div>
+				<div id="LinkDesc"><textarea id="PostLinkDesc" class="dbee-post-textarea" style="height:50px; width:415px; font-size:11px" onKeyDown="limitText(\'PostLinkDesc\',500,\'dblinkcountdown\');" onKeyUp="limitText(\'PostLinkDesc\',500,\'dblinkcountdown\');" onfocus="if(this.value == \'write something about this link...\') { this.value = \'\'; }" onblur="if(this.value == \'\') { this.value = \'write something about this link...\'; }">write something about this link...</textarea><br /><div id="dblinkcountdown" class="dbtextcountdown">500 limit</div></div>
+				<br style="clear:both"></div></div>
+				</div></div>';
+				// *******************
+				// DB REPLY PIX
+				$dbee_reply.='<div id="dbreply-pix" style="display:none"><div style="position:relative><div style="float:left; width:520px;"><div style="font-size:12px; margin:-10px 0 0 5px; font-style:bold;">select image</div><div>
+				<div style="margin:0 0 0 5px;">
+				<div style="float:left">
+				<div>
+				<form action="scripts/ajaxupload.php" method="post" name="sleeker" id="sleeker" enctype="multipart/form-data">
+				<input type="hidden" name="maxSize" value="9999999999" />
+				<input type="hidden" name="maxW" value="600" />
+				<input type="hidden" name="fullPath" value="http://dbee.me/imageposts/" />
+				<input type="hidden" name="relPath" value="../imageposts/" />
+				<input type="hidden" name="colorR" value="255" />
+				<input type="hidden" name="colorG" value="255" />
+				<input type="hidden" name="colorB" value="255" />
+				<input type="hidden" name="maxH" value="600" />
+				<input type="hidden" name="filename" value="filename" />
+				<p><input type="file" id="ajaxfilename" class="filefield-big" name="filename" onchange=\'ajaxUpload(this.form,"scripts/ajaxupload.php?filename=name&amp;maxSize=9999999999&amp;maxW=600&amp;fullPath=http://dbee.me/imageposts/&amp;relPath=../imageposts/&amp;colorR=255&amp;colorG=255&amp;colorB=255&amp;maxH=600","dbeePix_upload_area","Generating Preview...<br /br /><img src=\"images/ajaxloader.gif\" width=\"16\" height=\"16\" border=\"0\" >","<img src=\"images/error.gif\" width=\"16\" height=\"16\" border=\"0\"> Error in Upload, check settings and path info in source code."); return false;\' /><br /><font color="#666666">(Only .jpeg/.gif allowed)</font></p>
+				</form>
+				</div>
+				</div>
+				<div id="dbeePix_upload_area" style="float:left; margin-left:20px;" align="center"><div style="margin-top:12px">Preview your picture</div></div>
+				</div>
+				<div class="next-line"></div>
+				<div style="padding:5px;"><textarea id="PostPixDescComm" class="dbee-post-textarea" style="height:50px; width:490px; font-size:11px" onKeyDown="limitText(\'PostPixDescComm\',500,\'dbpixcountdown\');" onKeyUp="limitText(\'PostPixDescComm\',500,\'dbpixcountdown\');" onfocus="if(this.value == \'write something about this picture...\') { this.value = \'\'; }" onblur="if(this.value == \'\') { this.value = \'write something about this picture...\'; }">write something about this picture...</textarea></div>
+				<div id="dbpixcountdown" class="dbtextcountdown" style="margin:5px; color:#F9C10C; font-size:12px">500 limit</div>
+				</div></div></div></div>';
+				// *******************
+				// DB REPLY VIDZ
+				/* if(is_chrome() || is_macsafari()) $dbvidztop='-10px'; else $dbvidztop='-40px'; */
+				$dbee_reply.='<div id="dbreply-vidz" style="display:none"><div style="position:relative; margin:'.$dbvidztop.' 0 0 10px"><div style="float:left; width:520px;"><div class="icon-youtube" title="click to add YouTube video" style="cursor:pointer" onclick="javascript:showhidedbav(\'vidz\')"></div><div class="icon-soundcloud" title="click to add SoundCloud audio" style="cursor:pointer" onclick="javascript:showhidedbav(\'audio\')"></div><div id="dbmedia-vidz"><input type="text" id="PostVidz" class="roundedge-textbox" style="width:490px; margin-top:5px; font-size:11px" onfocus="if(this.value == \'paste YouTube link here\') { this.value = \'\'; }" onblur="if(this.value == \'\') { this.value = \'paste YouTube link here\'; }" value="paste YouTube link here"></div><div id="dbmedia-audio" style="display:none"><input type="text" id="PostAudio" class="roundedge-textbox" style="width:490px; margin-top:5px; font-size:11px" onfocus="if(this.value == \'paste SoundCloud embed code here\') { this.value = \'\'; }" onblur="if(this.value == \'\') { this.value = \'paste SoundCloud embed code here\'; }" value="paste SoundCloud embed code here"><br /><span id="howembedsc" style="float:right; cursor:pointer; color:#999999; margin-top:3px;">[how do I embed from SoundCloud?]</span></div><div class="next-line"></div><div id="videoerror" class="error-dbeelink" style="display:none; margin-left:5px; float:left;"><div class="link-post-error-arrow" style="margin-left:5px;"></div><div style="position:relative;">The website address was not found</div></div><div class="next-line"></div>
+				<div style="padding:5px;"><textarea id="PostVidzDesc" class="dbee-post-textarea" style="height:50px; width:490px; font-size:11px;" onKeyDown="limitText(\'PostVidzDesc\',500,\'dbvidzcountdown\');" onKeyUp="limitText(\'PostVidzDesc\',500,\'dbvidzcountdown\');" onfocus="if(this.value == \'write something about this media...\') { this.value = \'\'; }" onblur="if(this.value == \'\') { this.value = \'write something about this media...\'; }">write something about this media...</textarea></div>
+				<div class="next-line"></div><div id="dbvidzcountdown" class="dbtextcountdown" style="margin:5px; color:#F9C10C; font-size:12px">500 limit</div><br style="clear:both"></div><input type="hidden" id="hiddenmediaposted" value="vidz"></div></div>';
+		
+				$dbee_reply.="<input type='hidden' id='hiddendb' value='".$db."'><input type='hidden' id='replytype' value='text'></div><div class='next-line'></div><div id='twitter-reply-box' class='twitter-post-tag-reply' style='width:525px; padding:10px; min-height:50px; margin-top:0px; display:none;'><div class='twitter-bird'></div><div id='twitter-db-reply'></div><br style='clear:both'><input type='hidden' id='hiddentwitterreply'><input type='hidden' id='hiddentwittername'></div></div></div><div class='next-line'></div></div><div id='dbreplybtnwrapper'>";
+				if($loggedin) {
+					if(!$cookieUserBlocked) {
+						// $noteRow=mysql_fetch_object(mysql_query("select NotifyEmail from tblDbeeComments where DbeeID=".$db." AND UserID=".$cookieuser,$conn));
+						
+						if($this->NotifyEmail=='1') {
+							$radioClass='radioTick'; $sendNotify=0; $disp='display:block';
+						} elseif($this->NotifyEmail=='0') {
+							$radioClass='radio'; $sendNotify=1; $disp='display:block';
+						} else { $radioClass='radioTick'; $disp='display:none'; 
+						}
+						$dbee_reply.="<div id='sort-comments' style='margin:18px 0 20px 87px; float:left'><div class='icon-sort'></div><div style='float:left; margin:2px 0 0 3px'><span id='sort-latest' class='sort-active' onclick='javascript:sortcomments(\"DESC\")'>Latest at top</span> | <span id='sort-oldest' class='sort-nonactive' onclick='javascript:sortcomments(\"ASC\")'>Oldest at top</span></div></div><div id='notify-comment-div' style='float:left; margin:10px 0 0 50px; ".$disp."'><div id='notify-email-status' class='".$radioClass."' onclick='javascript:commentnotify(".$db.",1)'></div><div id='commnoteloader' style='display:none; width:22px; float:left; padding:10px 0 0 8px;'><img src='images/ajaxloader.gif' border='0' /></div><div style='margin:10px 0 0 10px; width:120px'>Notify via email</div></div><div class='btn-dbit' style='float:right; margin:10px 5px 0 0;' onclick='javascript:postcomment();'></div><div class='next-line'></div></div>";
+					} else {
+						$dbee_reply.="<div class='user-blocked-box'>You are blocked from this dbee by the author</div><div class='next-line'></div></div>";
+					}
+				}
+				else {
+					if(isset($_COOKIE['gptn']) && $_COOKIE['gptc']<2)
+						$dbee_reply.="<div class='next-line'></div><div align='center' style=\"font-style:normal; font-size:16px; margin-top:10px; color:#999\">As a guest you can post a maximum of 2 comments.</div><div class='btn-dbit' style='float:right; margin-top:-20px;' onclick='javascript:postcomment();'></div></div><div class='next-line'></div></div>";
+					else
+						$dbee_reply.="<div style='float:right; padding:8px;'>Login to post comment</div><div class='next-line'></div></div>";
+				}
+			}
+			else {
+				if($requestStatus=='0')
+					$dbee_reply='<div id="request-group-message" class="dbee-reply-wrapper" style="text-align:center; font-size:16px">THIS DB BELONGS TO A GROUP THAT REQUIRES YOU TO JOIN BEFORE POSTING A COMMENT.<br /><br /><a href="javascript:void(0)" rel="joingroup-popup~300" class="poplight" onclick="javascript:joingroupreq('.$dbeeGroup.','.$groupowner.','.$cookieuser.');">REQUEST TO JOIN HERE</a> TO HAVE YOUR SAY.</div><div class="next-line"></div>';
+				elseif($requestStatus=='1')
+				$dbee_reply="<div class='dbee-reply-wrapper' style='text-align:center; font-size:16px'>YOUR REQUEST IS PENDING APPROVAL BY GROUP OWNER.</div><div class='next-line'></div>";
+				if($requestStatus=='2')
+					$dbee_reply="<div class='dbee-reply-wrapper' style='text-align:center; font-size:16px'>YOU HAVE BEEN INVITED.<br /><br />Respond via your group notifications page.</div><div class='next-line'></div>";
+			}
+			// BUILD REPLY BOX
+		}
+		else { // IF THIS DBEE IS A POLL
+			
+			 $sno=1;
+			$dbee_reply.='<div style="float:left; width:350px;"><div class="heading-bold" style="margin-bottom:10px">Current Statistics</div><div id="PollPieChart" style="width:600px; height:400px;"></div></div><div style="float:left; width:300px; margin-left:20px;"><div class="heading-bold" style="margin-bottom:10px">Cast Your Vote</div><div id="PollOptions" class="medium-font">';
+			
+			foreach($this->poRes as $poRow) :
+			$dbee_reply.='<div>'.$sno.'. <a href="javascript:void(0);" onclick="javascript:castvote('.$poRow->ID.');">'.$poRow->OptionText.'</a></div><div style="clear:both"></div>';
+			$sno++;
+			endforeach;
+			$dbee_reply.='</div></div>';
+			
+			$dbee_reply='';
+		}
+		
+		
+		
+		$dbee_comments.='';
+		if(!$requestGroup) {
+			/* $TotalComments=mysql_num_rows(mysql_query("select * from tblDbeeComments where DbeeID=".$db)); // CALCUATE TOTAL DBEES IN DATABASE
+			$select_comments="select * from tblDbeeComments,tblUsers where DbeeID=".$db." AND tblDbeeComments.UserID=tblUsers.UserID order by CommentDate DESC limit 20";
+			$result_comments=mysql_query($select_comments,$conn); */
+			if($this->TotalComments>0) {
+				if($this->TotalComments<5) $seemorelabel='- no more comments -';
+				else $seemorelabel='<img src="images/seemore.png">';
+		
+				$counter=1;
+				foreach($this->row_comment as $row_comments):
+				
+					// CHECK IF COMMENT WRITTEN BY PROFILE HOLDER
+					if($cookieuser==$row_comments['UserID']) $ProfileHolderComment=true;
+					else $ProfileHolderComment=false;
+					// CHECK IF COMMENT WRITTEN BY PROFILE HOLDER
+		
+					// SELECT THIS USERS VOTE ON THIS POLL
+					if($isPoll) {
+						//$uservoterow=mysql_fetch_object(mysql_query('SELECT OptionText FROM tblPollOptions,tblPollVotes WHERE tblPollVotes.Vote=tblPollOptions.ID AND tblPollVotes.ID='.$row_comments['VoteID,$conn']));
+						//=$uservoterow->OptionText;
+					}
+					// SELECT THIS USERS VOTE ON THIS POLL
+		
+					// CHECK IF COMMENT USER IS BLOCKED
+					/* $userBlocked=false;
+					/* $userBlockedNum=mysql_num_rows(mysql_query("select * from tblBlockedUsers where DbeeID=".$db." AND User=".$row_comments['UserID']."',$conn));*/ 
+					/*if($userBlockedNum>0) $userBlocked=true; */ 
+					// CHECK IF COMMENT USER IS BLOCKED
+		
+					// SELECT TOTAL SCORES OF EACH KIND FOR THIS COMMENT
+				/* 	$totalCommentLove=mysql_num_rows(mysql_query("select * from tblScoring where ID=".$row_comments['CommentID." AND Type=2 AND Score=1",$conn));
+					$totalCommentLike=mysql_num_rows(mysql_query("select * from tblScoring where ID=".$row_comments['CommentID." AND Type=2 AND Score=2",$conn));
+					$totalCommentPhil=mysql_num_rows(mysql_query("select * from tblScoring where ID=".$row_comments['CommentID." AND Type=2 AND Score=3",$conn));
+					$totalCommentDislike=mysql_num_rows(mysql_query("select * from tblScoring where ID=".$row_comments['CommentID." AND Type=2 AND Score=4",$conn));
+					$totalCommentHate=mysql_num_rows(mysql_query("select * from tblScoring where ID=".$row_comments['CommentID." AND Type=2 AND Score=5",$conn));
+		
+					$commentScore='';
+					if($totalCommentLove>0) $commentScore.=$totalCommentLove.' <img src="images/scoring/small/love.png" style="position:absolute;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+					if($totalCommentLike>0) $commentScore.=$totalCommentLike.' <img src="images/scoring/small/like.png" style="position:absolute;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+					if($totalCommentPhil>0) $commentScore.=$totalCommentPhil.' <img src="images/scoring/small/philosopher.png" style="position:absolute;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+					if($totalCommentDislike>0) $commentScore.=$totalCommentDislike.' <img src="images/scoring/small/dislike.png" style="position:absolute;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+					if($totalCommentHate>0) $commentScore.=$totalCommentHate.' <img src="images/scoring/small/hate.png" style="position:absolute;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+					$commentScore=substr($commentScore,0,-6); */
+					// SELECT TOTAL SCORES OF EACH KIND FOR THIS COMMENT
+		
+					if($loggedin) {
+					/* 	$myScore='';
+						$scoring="select * from tblScoring where ID=".$row_comments['CommentID." AND Type=2 AND UserID=".$user;
+						$scoringRes=mysql_query($scoring,$conn); */
+						/* if(mysql_num_rows($scoringRes)>0) { // IF THIS COMMENT WAS SCORED BY LOGGED IN USER
+							$scoringRow=mysql_fetch_object($scoringRes); */
+							if($scoringRow->Score=='1') $myScore='YOU SCORED&nbsp;&nbsp;<img src="images/scoring/small/love.png" style="position:absolute; margin-top:-5px;">';
+							if($scoringRow->Score=='2') $myScore='YOU SCORED&nbsp;&nbsp;<img src="images/scoring/small/like.png" style="position:absolute; margin-top:-5px;">';
+							if($scoringRow->Score=='3') $myScore='YOU SCORED&nbsp;&nbsp;<img src="images/scoring/small/philosopher.png" style="position:absolute; margin-top:-5px;">';
+							if($scoringRow->Score=='4') $myScore='YOU SCORED&nbsp;&nbsp;<img src="images/scoring/small/dislike.png" style="position:absolute; margin-top:-5px;">';
+							if($scoringRow->Score=='5') $myScore='YOU SCORED&nbsp;&nbsp;<img src="images/scoring/small/hate.png" style="position:absolute; margin-top:-5px;">';
+						}
+				//	}
+		
+					if($counter==$TotalComments) $no_bottom_border='style="border-bottom:0px"';
+					else $no_bottom_border='';
+		
+					$ago='';
+					/* $diff=(_date_diff(time(), strtotime($row_comments['CommentDate)));
+		
+					if($diff[y]!=0) $ago=($diff[y]>1) ? $diff[y].' years ' : $diff[y].' year ';
+					elseif($diff[m]!=0) $ago=($diff[m]>1) ? $diff[m].' months ' : $diff[m].' month ';
+					elseif($diff[d]!=0) $ago=($diff[d]>1) ? $diff[d].' days ' : $diff[d].' day ';
+					elseif($diff[h]!=0) $ago=($diff[h]>1) ? $diff[h].' hours ' : $diff[h].' hour ';
+					elseif($diff[i]!=0) $ago=($diff[i]>1) ? $diff[i].' minutes ' : $diff[i].' minute ';
+					elseif($diff[s]!=0) $ago=($diff[s]>1) ? $diff[s].' seconds ' : $diff[s].' second '; */
+		
+					$ago.=' ago';
+		
+					// CHECK COMMENT USER ACCOUNT STATUS
+				/* 	$userStatusRow=mysql_fetch_object(mysql_query("select Status from tblUsers WHERE UserID=".$row_comments['UserID,$conn)); */
+				/* 	$userStatus=$userStatusRow->Status; */
+					// CHECK COMMENT USER ACCOUNT STATUS
+		
+					if($loggedin) {
+						if($row_comments['UserID']!='-1') {
+							if($userStatus==1) {
+								$profilelinkstart='<a href="profile.php?user='.$row_comments['UserID'].'">';
+							} else { $profilelinkstart='<a href="javascript:void(0)" class="profile-deactivated" title="'.DEACTIVE_ALT.'" onclick="return false;">';
+							} $profilelinkend='</a>';
+						} else { $profilelinkstart=''; $profilelinkend='';
+						}
+					}
+					//echo $row_comments['Type'];
+					if($row_comments['TwitterGPName']!='' && $row_comments['UserID']=='-1') $TGPN='<span style="font-style:normal; color:#999"> - Twitter @'.$row_comments['TwitterGPName'].'</span>'; else $TGPN='';
+		
+					$dbee_comments.='<a name="'.$row_comments['CommentID'].'" id="'.$row_comments['CommentID'].'"></a><div id="comment-block-"'.$row_comments['CommentID'].'" class="comment-list" '.$no_bottom_border.'><div style="float:left; width:80px; height:80px; margin-left:10px;">'.$profilelinkstart.'<img src="'.BASE_URL.'/show_thumbnails.php?ImgName='.$row_comments['ProfilePic'].'&ImgLoc=userpics&Width=60&Height=60" border="0" />'.$profilelinkend.'</div>';
+					$dbee_comments.='<div id="dbcomment-speechwrapper" class="dbcomment-speechwrapper" onmouseover="javascript:comment_speecharrowover('.$row_comments['CommentID'].')" onmouseout="javascript:comment_speecharrowout('.$row_comments['CommentID'].')"><div id="dbcomment-speecharrow-'.$row_comments['CommentID'].'" class="dbcomment-speecharrow"></div><div style="width:555px; margin:-7px 0 0 20px;"><div><div style="float:left; font-weight:bold; font-size:12px; margin-bottom:5px;">'.$profilelinkstart.$row_comments['Name'].$profilelinkend.$TGPN;
+					if($isPoll)
+						$dbee_comments.=' voted '.$uservote;
+					$dbee_comments.='</div><div id="comment-score'.$row_comments['CommentID'].'" style="float:right; width:100px; height:auto; text-align:center; color:#FF3333">'.$myScore.'</div></div>';
+					$dbee_comments.='<div class="next-line"></div>';
+					if($row_comments['Type']=='1') {
+						$dbee_comments.='<div class="justify-text" style="margin:0 10px 0 0px;">'.$row_comments['Comment'].'</div>';
+					}
+					elseif($row_comments['Type']=='2') {
+						$dbee_comments.='<div style="float:left; width:560px; margin:0 10px 0 0;"><div>'.$row_comments['UserLinkDesc'].'</div><div style="width:530px; padding:5px; margin-top:5px; margin-bottom:5px; background-color:#DAD9D9;"><div>'.$row_comments['LinkTitle'].' - <a href="'.$row_comments['Link'].'" target="_blank">'.$row_comments['Link'].'</a></div><div style="margin-top:10px;">'.$row_comments['LinkDesc'].'</div></div></div>';
+					}
+					elseif($row_comments['Type']=='3') {
+						$dbee_comments.='<div style="float:left; width:560px; margin:0 10px 0 0;"><div style="float:left; margin-top:5px; width:auto; margin-bottom:5px; padding:3px; border:1px solid #CCCCCC;"><a href="imageposts/'.$row_comments['Pic'].'" rel="shadowbox"><img src="show_thumbnails.php?ImgName='.$row_comments['Pic'].'&ImgLoc=imageposts&Width=120&Height=120" border="0" /></a></div><div style="float:left; margin-left:10px; width:420px;">'.$row_comments['PicDesc'].'</div></div>';
+					}
+					elseif($row_comments['Type']=='4') {
+						if($row_comments['Vid']!='') {
+							$atag='<a href="javascript:seevideo(\''.$row_comments['VidID'].'\');">';
+							$mediaicon='<div class="icon-youtube" style="margin:-2px 20px 0 -30px;; height:30px;"></div>';
+							if($row_comments['VidSite']=='Youtube')
+								$VideoThumbnail='<img src="http://i.ytimg.com/vi/'.$row_comments['VidID'].'/0.jpg" width="120" height="100" border="0" />';
+							elseif($row_comments['VidSite']=='Vimeo')
+							{
+								$url = 'http://vimeo.com/api/v2/video/'.$row_comments['VidID'].'.php';
+								$contents = @file_get_contents($url);
+								$thumb = @unserialize(trim($contents));
+		
+								$VideoThumbnail="<img src=".$thumb[0][thumbnail_small].">";
+							}
+							elseif($row_comments['VidSite']=='Dailymotion')
+							$VideoThumbnail='<img src="http://www.dailymotion.com/thumbnail/video/'.$row_comments['VidID'].'" width="120" height="100" border="0" />';
+						} elseif($row_comments['Audio']!='') {
+							$atag='<a href="javascript:seeaudio(\''.$row_comments['CommentID'].'\');">';
+							$VideoThumbnail='<img src="images/soundcloud.png">';
+							$mediaicon='<div class="icon-soundcloud" style="margin:3px 20px 0 -30px; height:30px;"></div>';
+						}
+						$dbee_comments.='<div style="float:left; width:560px; margin:0 10px 0 0;"><div style="float:left; margin-right:10px; width:120px; margin-bottom:5px; padding:3px; border:1px solid #CCCCCC;">'.$atag.$VideoThumbnail.'</a></div><div style="float:left; width:420px;">'.$row_comments['VidDesc'].'</div></div>';
+					}
+		
+					if($row_comments['TwitterComment']!='') {
+						$dbee_comments.="<div class='next-line'></div><div id='tweet-block-".$row_comments['CommentID']."' class='twitter-post-tag-comments' style='width:480px; padding:10px; min-height:50px; margin-top:10px;'><div class='twitter-bird'></div><div>".str_replace('%26','&',$row_comments['TwitterComment'])."</div>";
+		
+						
+						$dbee_comments.="<br style='clear:both'></div>";
+					}
+		
+					$dbee_comments.='<div class="next-line"></div><div style="font-size:10px; color:#666; margin:5px 10px 5px 0; width:auto;"><div style="float:left;">'.$ago.'</div><div style="float:left; margin:0 20px 10px 20px;">'.$commentScore.'</div>';
+					if(!$ProfileHolderComment) {
+						if($loggedin) {
+							$dbee_comments.='<div style="float:left; margin-left:10px;"><a href="javascript:void(0);" id="scorecomment'.$counter.'" onclick="javascript:OpenShadowbox(\'comment/score/comment/'.$row_comments['CommentID'].'\',\'\',\'285\',\'235\');">score comment</a> | <a href="javascript:void(0);" onclick="javascript:OpenShadowbox(\'comment/reportabuse/db/'.$db.'/comment='.$row_comments['CommentID'].'&type=2\',\'\',\'300\',\'400\');">report abuse</a></div>';
+						}
+					}
+					else {
+						if(!$isPoll) {
+							$dbee_comments.='<div style="float:right;"><a href="javascript:void(0)" rel="removecomment-popup~300" class="poplight" onclick="javascript:fillremovecommentpopup('.$row_comments['CommentID'].','.$row_comments['UserID'].');"><div class="icon-delete" style="float:right; margin-top:10px;" title="remove comment"></div></a></div>';
+						}
+					}
+					/*
+					 // ADD REMOVE COMMENT CONTROL FOR DB ADMIN
+					if($ProfileHolder && !$ProfileHolderComment) {
+					$dbee_comments.='<div style="float:right; margin-right:8px;"><a href="#?w=330" rel="removecomment-popup" class="poplight" onclick="javascript:fillremovecommentpopup('.$row_comments['CommentID.','.$row_comments['UserID.',\'1\','.$row_comments['DbeeOwner.');">remove comment</a>';
+					}
+		
+					if($row_comments['UserID!='-1') {
+					if($ProfileHolder && !$ProfileHolderComment) {
+					if(!$userBlocked)
+						$dbee_comments.=' | <span class="blockuser-'.$row_comments['UserID.'"><a href="#?w=400" rel="blockuser-popup" class="poplight" onclick="javascript:fillblockuserpopup('.$row_comments['UserID.','.$row_comments['DbeeOwner.','.$db.');"><span style="color:#F40B0B">Block</span></a></span>';
+					else
+						$dbee_comments.=' | <span class="blockuser-'.$row_comments['UserID.'"><a href="javascript:void(0);" onclick="javascript:unblockuser('.$row_comments['UserID.','.$row_comments['DbeeOwner.','.$db.');"><span style="color:#EB8649">Unblock</span></a></span>';
+					}
+					}
+					$dbee_comments.='</div><br style="clear:both; font-size:1px;" /></div>';
+					// ADD REMOVE COMMENT CONTROL FOR DB ADMIN
+					*/
+		
+					// **********************************************************
+					// ADD REMOVE COMMENT/BLOCK USER CONTROLS FOR DB SUPER ADMIN
+					if($user=='32') {
+						$dbee_comments.='<div style="float:right; margin-right:8px;"><a href="#?w=330" rel="removecomment-popup" class="poplight" onclick="javascript:fillremovecommentpopup('.$row_comments['CommentID'].','.$row_comments['UserID'].',\'1\','.$row_comments['DbeeOwner'].');">remove comment</a>';
+		
+						if($row_comments['UserID']!='-1') {
+							if(!$userBlocked)
+								$dbee_comments.=' | <span class="blockuser-'.$row_comments['UserID'].'"><a href="#?w=400" rel="blockuser-popup" class="poplight" onclick="javascript:fillblockuserpopup('.$row_comments['UserID'].','.$row_comments['DbeeOwner'].','.$db.');"><span style="color:#F40B0B">Block</span></a></span>';
+							else
+								$dbee_comments.=' | <span class="blockuser-'.$row_comments['UserID'].'"><a href="javascript:void(0);" onclick="javascript:unblockuser('.$row_comments['UserID'].','.$row_comments['DbeeOwner'].','.$db.');"><span style="color:#EB8649">Unblock</span></a></span>';
+						}
+						$dbee_comments.='</div><br style="clear:both; font-size:1px;" /></div>';
+					} else $dbee_comments.='<br style="clear:both; font-size:1px;" /></div>';
+					// ADD REMOVE COMMENT/BLOCK USER CONTROLS FOR DB SUPER ADMIN
+					// **********************************************************
+		
+					$dbee_comments.='</div></div></div>';
+					$counter++;
+				endforeach;
+				
+				$dbee_comments.='<input type="hidden" id="commentsortorder" value="ASC"><input type="hidden" id="currcommentsortorder" value="DESC">';
+				if($this->TotalComments>5) {
+					$dbee_comments.='<div class="next-line"></div><div id="see-more-comments5"><div id="more-comments-loader" style="padding:10px; cursor:pointer; color:#333333; text-align:center;" onclick="javascript:seemorecomments(20,20,'.$db.');">'.$seemorelabel.'</div></div>';
+				}
+			}
+			else {
+				if($row['Type']!='5') // IF THIS IS NOT A POLL
+					$dbee_comments="<div style='margin-left:85px;'>Be the first one to comment on this dbee.</div><br /><br />";
+				else $dbee_comments='0';
+			}
+			// SELECT COMMENTS
+		}
+		$i++;
+	
+	//}
+/* else {
+	if($row[0]['Type']!='5') // IF THIS IS NOT A POLL
+		$dbee_comments="<div style='margin-left:85px;'>Be the first one to comment on this dbee.</div><br /><br />";
+	else $dbee_comments='0';
+} */
+// SELECT COMMENTS
+	//}
+$i++;
+
+$return=$dbee_highlighted.'~#~'.$dbee_reply.'~#~'.$dbee_comments.'~#~'.$myDBScore.'~#~'.$follow.'~#~'.$userName.'~#~'.$TotalComments.'~#~'.$userloggedin.'~#~'.$isPoll.'~#~'.$pollopt1.'~#~'.$pollopt2.'~#~'.$pollopt3.'~#~'.$pollopt4.'~#~'.$pollopt1num.'~#~'.$pollopt2num.'~#~'.$pollopt3num.'~#~'.$pollopt4num.'~#~'.$totalvotesexist.'~#~'.$myvoterow['Vote'].'~#~'.$sendNotify.'~#~'.$dbeeType;
+echo $return;
+
+?>

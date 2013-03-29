@@ -1,0 +1,106 @@
+<?php  
+	$images			= BASE_URL.'images';
+	$my_Proimages	= BASE_URL.'uploads';
+
+	$namespace 		= new Zend_Session_Namespace();
+	$arr 			= new Application_Model_FbIncludes();
+	$userstuff		= new Application_Model_FbUser();
+	$usersprofile	= new Application_Model_FbProfile();
+	$val			= $userstuff->userRec($namespace->userid);
+	$country    	= new Application_Model_FbCountry();
+	
+	
+	$Pro_img	= $usersprofile->SelectFrontProfileImage($namespace->userid);
+	if($this->pro_img!='')
+	{
+		$Pro_img = $this->pro_img;
+	}
+	else
+	{
+		$Pro_img = $Pro_img;
+	}
+	
+	//$Pro_imga	= $userstuff->SelectFrontProfileImage($val[0]['id']);
+	//echo $pro_img= $Pro_img;
+?>
+<div class="wrapper2">
+  <div class="wrapper">
+    <div class="content-wrapper2">
+	<div class="left_column">
+        <div class="box">
+			<input type="hidden" name="BASE_URL" id="BASE_URL" value="<?php echo BASE_URL ?>">
+			<input type="hidden" name="user_profile_id" id="user_profile_id" value="<?php echo $namespace->userid ?>">
+			<h4>
+				<img src="<?php echo $images ?>/book_icon.jpg" align="absmiddle" />&nbsp; 
+				<span class="red">My Favourite</span> Goals
+			</h4>
+			<div class="prof_img" id="prof_left_image">
+				<?php if($Pro_img!="") { ?> 
+				<img src="<?PHP ECHO BASE_URL ?>timthumb.php?src=<?php echo $my_Proimages.'/'.$Pro_img; ?>&h=57&w=67&zc=1" alt="My Picture" />
+				<?php } else { ?>
+				<img src="<?PHP ECHO BASE_URL ?>timthumb.php?src=<?php echo $images ; ?>/photo.png&h=57&w=67&zc=1" alt="My Picture" />
+				<?php }  ?>
+			</div>
+			<p class="prof_hd_txt">
+				<strong><?php echo $namespace->username ?></strong><br />
+				<img src="<?php echo $images ?>/profile_icon.gif" width="10" height="12" alt="Profile" title="Profile" /> &nbsp;
+				<a href="<?php echo $this->url(array('controller'=>'Profile', 'action'=>'index'),'default',true)?>">Profile</a> <br />
+				<img src="<?php echo $images ?>/setting_icon.gif" alt="Setting" title="Setting" /> 
+				<a href="<?php echo $this->url(array('controller'=>'accsetting', 'action'=>'index'),'default',true)?>">Setting</a><br />
+			</p>
+			<div class="hr"> </div>
+			<div align="center">
+				<!--<img src="<?php echo $images ?>/fav_icon.jpg" alt="Favourite" title="Favourite" /> &nbsp;-->
+				<img src="<?php echo $images ?>/sms_icon.jpg" alt="SMS" title="SMS" /> &nbsp;
+				<img src="<?php echo $images ?>/search_icon.jpg" alt="Search" title="Search" /> &nbsp;
+				<a href="/"><img src="<?php echo $images ?>/home_icon.jpg" alt="Home " title="Home " /></a>
+			</div>
+        </div>
+        <!-- Box End -->
+        <div class="box mrg_btm0">
+          <h4><img src="<?php echo $images ?>/partner_search_icon.jpg" align="absmiddle" />&nbsp; <span class="red">Partner</span> Search</h4>
+		  
+		  <form name="basic_search" id="basic_search" action="<?php echo $this->url(array('controller'=>'Home', 'action'=>'basicsearch'),'default',true) ; ?>" >
+          <div class="row2">
+            <label> I am a</label>
+            <select class="select" name="i_m_text">
+              <option value="male" <?php if($namespace->i_m_text=='male') { echo "selected"; }?>>Male</option>
+              <option value="female" <?php if($namespace->i_m_text=='female') { echo "selected"; }?>>Female</option>
+            </select>
+          </div>
+          <div class="row2">
+            <label> Looking for</label>
+            <select class="select" name="looking_text">
+				<option value="female" <?php if($namespace->looking_text=='female') { echo "selected"; }?>>Female</option>
+				<option value="male" <?php if($namespace->looking_text=='male') { echo "selected"; }?>>Male</option>
+				
+            </select>
+          </div>
+		  
+         
+          
+          <div class="row2">
+            <label> Age</label>
+            <?php echo $arr->agearray('fromAge',$namespace->fromAge); ?> <label style="width:20px;"> to </label> <?php 
+				if($namespace->toAge=='')
+				{
+					$namespace->toAge=37;
+				}		
+				echo $arr->agearray('toAge',$namespace->toAge); ?>
+          </div>
+		  <div class="row2">
+            <label> Sorted by</label>
+            <?php echo $arr-> sortedBy($namespace->sortbsearch,0,'sortbsearch'); ?>
+          </div>
+		 
+          <div align="center"> <input type="image" src="<?php echo $images ?>/search_black_btn.gif" alt="Search" align="absmiddle" title="Search" /> </div>
+		   </form>
+        </div>
+        <!-- Box End -->
+        <img src="<?php echo $images ?>/sucess_stories.png" align="left" class="success_story" />
+        <div class="clear"> </div>
+        <div class="advertise_box"> <img src="<?php echo $images ?>/advertise_img2.jpg" />
+          <p class="advertise_link" align="center"><a href="#">advertise with us</a></p>
+        </div>
+        <!-- / Advertise Box End -->
+      </div>

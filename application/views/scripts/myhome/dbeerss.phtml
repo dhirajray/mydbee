@@ -1,0 +1,110 @@
+
+<script type="text/javascript" src="<?php echo BASE_URL; ?>/js/jquery.js"></script>
+
+<script type="text/javascript" src="<?php echo BASE_URL; ?>/js/javascript.js"></script>
+<script type="text/javascript" src="<?php echo BASE_URL; ?>/autocomplete/jquery.autocomplete.js"></script>
+
+
+<script type="text/javascript" src="<?php echo BASE_URL; ?>/js/jquery.min_1.4.js"></script>
+<script type="text/javascript" src="<?php echo BASE_URL; ?>/js/jquery.min_1.4.4.js"></script>
+<script type="text/javascript" src="<?php echo BASE_URL; ?>/js/jquery-latest.js"></script>
+
+<script type="text/javascript" src="<?php echo BASE_URL; ?>/js/browser_check.js"></script>
+<script type="text/javascript" src="<?php echo BASE_URL; ?>/js/functions.js"></script>
+<script type="text/javascript" src="<?php echo BASE_URL; ?>/js/jquery.min.js"></script>
+
+
+<script language="javascript" type="text/javascript">
+// FUNCTION TO FILTER INPUT FIELD VALUE TO ONLY NUMBERS
+function filter() {
+	var array = $("#rss-sites").val().split(",");
+	// If you are dealing with numeric values then you will want to cast the string as a number
+	var numbers  = array.map(function(v){ return parseInt(v)});
+	// Remove anything which is not a number
+	var filtered = numbers.filter(function(v){ return !isNaN(v)});
+	// If you want to rejoin your values
+	var joined = filtered.join(",");
+	return joined;
+}
+// FUNCTION TO FILTER INPUT FIELD VALUE TO ONLY NUMBERS
+
+function updatelabel(val) {
+	var k=1;
+	var splitVal=val.split(',');
+	var total=splitVal.length;
+	for(i=0;i<total;i++) {
+		$("#label"+splitVal[i]).html('<font color="#CC0000">&nbsp;- RSS '+k+'</font>');
+		k++;
+	}
+}
+
+$(function() {
+	$('.check').click(function(){
+		$("#rss-sites").val('');
+		$(".check").each(function(){
+			if($(this).attr('checked')){
+				if($("#rss-sites").val()!='')
+					$("#rss-sites").val($("#rss-sites").val()+','+$(this).val());
+				else
+					$("#rss-sites").val($(this).val());
+			} else {
+				$("#label"+$(this).val()).html('');
+			}
+		});
+		
+		var val=$("#rss-sites").val();
+		var splitVal=val.split(',');
+		var total=splitVal.length;
+		if(total>4) {
+			$("#msg").html('You can select a maximum of 4');
+			$("#msg").fadeIn('slow');
+			$(this).attr('checked', false);
+			$("#rss-sites").val($("#rss-sites").val().replace($(this).val(), ""));
+			$("#rss-sites").val(filter());
+		} else {
+			$("#msg").fadeOut('slow');
+			updatelabel(val);
+		}
+	});
+});
+</script>
+
+<div style="background-color:#FFF;float:left;">
+
+<div class="user-name" style="margin-bottom:10px; font-size:18px;">choose rss feeds below to appear on the right hand side of your account<br /><span style="font-size:14px; font-weight:normal; color:#999999"> - remove an rss feed in order to replace it with another</span></div>
+<div class="next-line"></div>
+<div id="msg" class="" style="padding:5px; text-align:center; color:#CC0000; display:none">You can select a maximum of 4</div>
+<div class="next-line"></div>
+<div>
+
+<?php
+	$counter=1;
+	$labelcounter=1;
+	$userrss = $this->userrss;
+	$dnt = array();	
+			foreach($this->siterss as $typeRow):
+				if(in_array($typeRow['ID'],$userrss)) { $checked='checked="checked"'; $color="color:#CC0000"; $rsslabel='&nbsp;- RSS '.$labelcounter; $labelcounter++; } else { $checked=''; $color=''; $rsslabel=''; }
+				if(!in_array($typeRow['cname'],$dnt)){
+				array_push($dnt,$typeRow['cname']);
+				//if($counter!=1)
+				echo "<div class='next-line'></div></div><div style='float:left; width:180px; '>";
+				echo "<div class='heading-bold' style='margin-top:20px'>".$typeRow['cname']."</div>";				
+			}
+			?>
+				<label><div><div style="float:left"><input type="checkbox" class="check" value="<?=$typeRow['ID']?>" <?=$checked?>></div><div style="float:left;"><?=$typeRow['Name']?></div><div id="label<?=$typeRow['ID']?>" style=" <?=$color?>"><?=$rsslabel?></div></div></label><div class="next-line"></div>
+	<?php
+			
+			//echo '<div class="next-line"></div></div>';
+			if($counter=='4') {				
+				echo '<div class="next-line"></div>';
+				$counter=1;
+			} else $counter++;	
+			endforeach;
+		
+?>
+<input type="hidden" id="rss-sites" value="<?=$userrss?>">
+</div>
+
+<div class="buttonNewSmall" style="float:right; <? echo (is_chrome) ? 'padding-top:10px;' : ''; ?>" onclick="javascript:saveuserrss();">Save</div>
+</div>
+

@@ -1,0 +1,10 @@
+<?php 
+ echo "<img src='images/rsslogos/".$logo."'>";
+  foreach ($this->feedLinks as $item) {
+ 	echo '<div style="width:200px"><a href="'.$item->getLink().'">'.$item->getTitle().'</a></div>';
+ 	echo "<div style='width:200px'>".$item->getDescription()."</div>"; 
+ 	echo "<div style='width:200px' align='right' ><a class='rss-startdblink' href='javascript:startdbfromrss(1)'>start a db</a></div>";
+ }
+
+echo $url; 
+?>

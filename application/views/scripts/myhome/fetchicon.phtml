@@ -1,0 +1,9 @@
+<div id="rss-icons" style="text-align:center; margin:-18px 0 5px 8px;">
+<div style="text-align:center; margin:-18px 0 5px 8px;" id="rss-icons">
+<div onclick="javascript:loadrss('twitter',0,0)" class="rsstwitter rss-icon-styles" id="rss0"></div>
+<?php 
+foreach($this->rssurl as $link):?>
+<div onclick="javascript:myfeeds('<?php echo $link['Site']; ?>','<?php echo $link['Logo']; ?>',1)" class="rss1 rss-icon-styles" id="rss1"></div>
+<?php endforeach; ?>
+</div>
+</div>

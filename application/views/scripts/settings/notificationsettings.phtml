@@ -1,0 +1,420 @@
+<?php echo $this->doctype() ?>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+
+<title>dbee.me | the debate n rate social network</title>
+
+<meta name="description" content="dbee is a real time 'debate and rate' social network enabling you to share views on any subject, in open community or closed groups. Create debate by posting opinions, photos, videos and links, score and be scored on posts, and rise or fall in dbee leagues.">
+
+<meta property="og:url" content="http://www.dbee.me.com" /> 
+
+<meta property="og:type" content="article" /> 
+
+<meta property="og:title" content="dbee.me | the debate n rate social network" /> 
+
+<meta property="og:site_name" content="dbee" /> 
+
+<meta property="og:description" content="dbee is a real time 'debate and rate' social network enabling you to share views on any subject, in open community or closed groups. Create debate by posting opinions, photos, videos and links, score and be scored on posts, and rise or fall in dbee leagues." /> 
+
+<meta property="og:image" content="http://www.dbee.me/images/landing-logo.png" />
+
+<link rel="icon" type="image/png" href="http://dbee.me/images/favicon.png">
+
+
+
+<?php echo $this->headLink(array('rel' => 'shortcut icon', 'type' => 'image/vnd.microsoft.icon', 'href' => 'http://dbee.me/images/favicon.png'))
+
+                       // ->prependStylesheet(BASE_URL . '/css/bootstrap-responsive.min.css')
+
+                        ->prependStylesheet(BASE_URL . '/css/style.css')
+
+                        ->prependStylesheet(BASE_URL . '/css/global.css')
+
+                       // ->prependStylesheet(BASE_URL . '/css/bootstrap.min.css')
+
+						->prependStylesheet(BASE_URL . '/css/speechbubbles.css')					
+
+						->prependStylesheet(BASE_URL . '/css/ddcolortabs.css')					
+
+						->prependStylesheet(BASE_URL . '/css/tabcontent.css')
+
+						->prependStylesheet(BASE_URL . '/css/styles.css')
+
+						->prependStylesheet(BASE_URL . '/css/dbee.css')						
+
+						->prependStylesheet(BASE_URL . '/css/jquery.css')
+
+						->prependStylesheet(BASE_URL . '/css/jquery.blockUI.css')
+
+						->prependStylesheet(BASE_URL . '/css/shadowbox.css')
+
+						->prependStylesheet(BASE_URL . '/css/dbee.css')						
+
+						?>
+
+<!-- Scripts -->
+
+<?php echo $this->headScript()->prependFile(BASE_URL . '/js/html5.js', 'text/javascript', array('conditional' => 'lt IE 9',))
+
+                     // ->prependFile(BASE_URL . '/js/bootstrap.min.js')
+
+					  ->prependFile(BASE_URL . '/js/smooth.pack.js')
+
+                      ->prependFile(BASE_URL . '/js/jquery.min.js')
+
+				      ->prependFile(BASE_URL . '/js/functions.js')
+
+				      ->prependFile(BASE_URL . '/js/browser_check.js')
+
+				      ->prependFile(BASE_URL . '/js/ajaxupload.js')
+
+				      ->prependFile(BASE_URL . '/js/jquery-latest.js')
+
+				      ->prependFile(BASE_URL . '/js/jquery.min_1.4.4.js')
+
+				      ->prependFile(BASE_URL . '/js/jquery.min_1.4.js')
+
+				      ->prependFile(BASE_URL . '/js/jquery.slideto.v1.1.js')	
+
+				      //->prependFile(BASE_URL . '/js/shadowbox/show_shadowbox.js')
+
+				      //->prependFile(BASE_URL . '/js/shadowbox/shadowbox.js')				      
+
+				      ->prependFile(BASE_URL . '/js/all.js')				
+
+				      ->prependFile(BASE_URL . '/js/ddaccordion.js')
+
+				      ->prependFile(BASE_URL . '/js/dropdowncontent.js')
+
+				      ->prependFile(BASE_URL . '/js/dropdowntabs.js')	
+
+				      ->prependFile(BASE_URL . '/js/html5.js')
+
+				      ->prependFile(BASE_URL . '/js/javascript.js')
+
+				      ->prependFile(BASE_URL . '/js/jquery.blockUI.js')
+
+				      ->prependFile(BASE_URL . '/js/tabcontent.js')
+
+				      ->prependFile(BASE_URL . '/js/speechbubbles.js')
+
+				      ->prependFile(BASE_URL . '/js/jquery.js')
+
+				    				   
+
+				      ?>
+
+
+
+
+
+
+
+<script language="javascript" type="text/javascript">
+
+var screenwidth = screen.width;
+
+if (screenwidth == 1024) {
+
+	document.write('<link rel="stylesheet" href="<?php echo BASE_URL.'css/1024.css'?>" type="text/css" media="all" />');
+
+}
+
+</script>
+
+
+
+
+
+<script language="javascript" type="text/javascript" src="<?php echo BASE_URL.'js/functions.js?1379088342'?>"></script>
+
+<script type="text/javascript" src="<?php echo BASE_URL.'js/browser_check.js'?>"></script>
+
+<script type="text/javascript" src="<?php echo BASE_URL.'js/smooth.pack.js'?>"></script>
+
+
+
+<!-- BEGIN INCLUDE SCRIPTS TO CALL SHADOWBOX -->
+
+
+
+<script type="text/javascript" src="<?php echo BASE_URL.'js/shadowbox/shadowbox.js'?>"></script>
+
+<script type="text/javascript" src="<?php echo BASE_URL.'js/shadowbox/show_shadowbox.js'?>"></script>
+
+<!-- END INCLUDE SCRIPTS TO CALL SHADOWBOX -->
+
+
+
+<!-- DROPDOWN CONTENT FOR MY GROUP OPTIONS -->
+
+<script type="text/javascript" src="<?php echo BASE_URL.'js/dropdowncontent/dropdowncontent.js'?>"></script>
+
+<!-- DROPDOWN CONTENT FOR MY GROUP OPTIONS -->
+
+
+
+<!-- DROPDOWN TOP MENU -->
+
+<script type="text/javascript" src="<?php echo BASE_URL.'js/dropdowntab/dropdowntabs.js'?>"></script>
+
+<!-- DROPDOWN TOP MENU -->
+
+
+
+<!-- BEGIN INCLUDE SCRIPTS TO CALL DHTML TOOLTIP -->
+
+<link rel="stylesheet" type="text/css" href="<?php echo BASE_URL.'css/speechbubbles.css'?>" />
+
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
+
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
+
+<script src="<?php echo BASE_URL.'js/speechbubbles.js'?>"></script>
+
+<script type="text/javascript">
+
+jQuery(function($){ //on document.ready
+
+ $('.addspeech').speechbubble()
+
+})
+
+</script>
+
+<script type="text/javascript" src="<?php echo BASE_URL.'scripts/ajaxupload.js'?>"></script>
+
+<script src="http://code.jquery.com/jquery-latest.js"></script>
+
+<!-- SLIDING BACK TO TOP -->
+
+<script language="javascript" type="text/javascript" src="<?php echo BASE_URL.'js/jquery.slideto.v1.1.js'?>"></script>
+
+<script language="javascript" type="text/javascript">
+
+var jqnctop = jQuery.noConflict();
+
+jqnctop(document).ready(function(){
+
+	jqnctop('a[name=slidetotop]').slideto({
+
+		target : '#pagetop',
+
+		speed  : 700
+
+	});
+
+});
+
+
+
+$(window).scroll(function(){
+
+	if($(window).scrollTop() > 200 ){
+
+		$('#backtotop').fadeIn("slow");
+
+	} else if($(window).scrollTop() < 200 ){
+
+		$('#backtotop').fadeOut("fast");
+
+	}
+
+});
+
+</script>
+
+<script language="javascript" type="text/javascript">
+
+$(function() {
+
+	// HIGHLIGHT TEXTBOX BORDER ON FOCUS AND HIDE ON BLUR
+
+	$("input").focus(function() {
+
+		$(this).addClass("curFocus");
+
+	});
+
+	$("input").blur(function() {
+
+		$(this).removeClass("curFocus")
+
+	});
+
+
+
+	$("textarea").focus(function() {
+
+		$(this).addClass("curFocusTextarea");
+
+	});
+
+	$("textarea").blur(function() {
+
+		$(this).removeClass("curFocusTextarea")
+
+	});
+
+
+
+	$("select").focus(function() {
+
+		$(this).addClass("curFocus");
+
+	});
+
+	$("select").blur(function() {
+
+		$(this).removeClass("curFocus")
+
+	});
+
+	// HIGHLIGHT TEXTBOX BORDER ON FOCUS AND HIDE ON BLUR
+
+	
+
+	// MOVE LEFT SIDE ICONS ON HOVER
+
+	$("div.sticky-left").hover(function(){
+
+		$(this).animate({
+
+			left: "4px"
+
+		},"fast");
+
+	},function(){
+
+		$(this).animate({
+
+			left: "2px"
+
+		},"fast");
+
+	});
+
+	// MOVE LEFT SIDE ICONS ON HOVER
+
+});
+
+</script>
+
+<link rel="stylesheet" type="text/css" href="<?php echo BASE_URL.'css/tabcontent.css'?>" />
+
+<script type="text/javascript" src="<?php echo BASE_URL.'js/tabcontent.js'?>"></script>
+
+<script language="javascript" type="text/javascript">
+
+$(function() {
+
+	var open = false;
+
+	$('#footerSlideButton').click(function() {
+
+		if(open === false) {
+
+			document.getElementById('footerSlideText').style.display='block';
+
+			$('#footerSlideContent').animate({ height: '50px' });
+
+			$(this).css('backgroundPosition', 'bottom left');
+
+			open = true;
+
+		} else {
+
+			document.getElementById('footerSlideText').style.display='none';
+
+			$('#footerSlideContent').animate({ height: '0px' });
+
+			$(this).css('backgroundPosition', 'top left');
+
+			open = false;
+
+		}
+
+	});
+
+});
+
+</script>
+
+<script type="text/javascript">
+
+$(document).ready(function(){
+
+	$("input").focus(function() {
+
+		$(this).addClass("curFocus");
+
+	});
+
+	$("input").blur(function() {
+
+		$(this).removeClass("curFocus")
+
+	});
+
+});
+
+</script>
+
+<style type="text/css">
+
+body {background-color:#FFFFFF}
+
+</style>
+
+<link rel="stylesheet" href="<?php echo BASE_URL.'css/whitebg.css'?>" type="text/css" />
+
+
+
+</head>
+
+<body>
+
+<div style="clear:both"></div>
+
+<!---------end header---------------------------->
+<script>
+$(function() {
+	fetchnotificationdetails();
+});
+</script>
+
+<!-- SCRIPTS FOR BALLOON TOOLTIP -->
+<link rel="stylesheet" type="text/css" href="<?php echo BASE_URL.'css/balloontip.css'?>" />
+<script type="text/javascript" src="<?php echo BASE_URL.'js/balloontip.js'?>"></script>
+<!-- SCRIPTS FOR BALLOON TOOLTIP -->
+<link rel="stylesheet" href="<?php echo BASE_URL.'css/whitebg.css'?>" type="text/css" />
+
+<div style="padding:20px;">
+	<div><div class="user-name" style="margin:6px 10px 6px 0px; float:left; cursor:auto">edit</div>
+	<div id="edit-notifications-title" class="user-name" style="margin-left:0px; margin-top:6px; margin-bottom:6px; float:left;" onclick="javascript:fetchnotificationdetails()">notification settings</div></div>
+	<div class="next-line"></div>
+	<div id="profile-edit" style="margin-left:0px; margin-top:10px; padding:10px;" class="maindb-wrapper-border"></div>
+	<div id="bio-edit"></div>
+	<input type="hidden" id="reloadend">
+</div>
+<!-- SCRIPTS FOR QTIP -->
+<script type="text/javascript" src="http://www.dbee.me/js/qtip/jquery.qtip-1.0.0-rc3.min.js"></script>
+<!-- SCRIPTS FOR QTIP -->
+
+<!-- SCRIPT FOR FADE POPUP -->
+<div id="editprofile-popup" class="popup_block">Profile details updated.</div>
+<div id="editbio-popup" class="popup_block">Biography updated.</div>
+<div id="editpass-popup" class="popup_block">Password updated.</div>
+<div id="scoring-off-popup" class="popup_block">Notification turned OFF.</div>
+<div id="scoring-on-popup" class="popup_block">Notification turned ON.</div>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.1/jquery.min.js"></script>
+<script type="text/javascript">
+var jqnc=jQuery.noConflict();
+jqnc(document).ready(function(){
+	fadepopup();
+});
+</script>

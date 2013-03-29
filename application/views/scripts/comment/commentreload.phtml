@@ -1,0 +1,209 @@
+<?
+$loggedin=true;
+if(!isset($_COOKIE['user'])) $loggedin=false;
+$user=$_COOKIE['user'];
+if($seemore=='1') setcookie("CookieFeedEndOnReload", $startnew, time()+3600);
+$return='';
+$isPoll=false;
+// CHECK IF DB IS BEING VIEWED BY DB OWNER
+$i=1;
+	$row=$this->row;
+	$dbeeUser=$row['User'];
+	if($row['Type']=='5') $isPoll=true;	
+	// CHECK IF DB OWNER
+	$cookieuser=$_COOKIE['user'];
+	if($cookieuser==$dbeeUser) $DbOwner=true;
+	else $DbOwner=false;	
+$i=1;
+$startnew = $this->startnew;
+if($this->commenttotal) {
+	$startnew = $this->startnew;
+	$counter=1;
+	
+	if(!isset($this->reload)) $return.='';
+	foreach($this->commentrow as $row):
+		// CHECK IF PROFILE HOLDER
+		if($row['CommentUser']==$user) $ProfileHolder=true;
+		else $ProfileHolder=false;
+		// CHECK IF PROFILE HOLDER
+	
+		// SELECT THIS USERS VOTE ON THIS POLL
+		if($isPoll) {
+			$uservoterow=mysql_fetch_object(mysql_query('SELECT OptionText FROM tblPollOptions,tblPollVotes WHERE tblPollVotes.Vote=tblPollOptions.ID AND tblPollVotes.ID='.$row['VoteID'],$conn));
+			$uservote=$uservoterow->OptionText;
+		}
+		// SELECT THIS USERS VOTE ON THIS POLL
+
+		// CHECK IF COMMENT USER IS BLOCKED
+		/* $userBlocked=false;
+		$userBlockedNum=mysql_num_rows(mysql_query("select * from tblBlockedUsers where DbeeID=".$db." AND User=".$row->UserID,$conn));
+		if($userBlockedNum>0) $userBlocked=true;
+		// CHECK IF COMMENT USER IS BLOCKED
+
+		// SELECT TOTAL SCORES OF EACH KIND FOR THIS COMMENT
+		$totalCommentLove=mysql_num_rows(mysql_query("select * from tblScoring where ID=".$row['CommentID']." AND Type=2 AND Score=1",$conn));
+		$totalCommentLike=mysql_num_rows(mysql_query("select * from tblScoring where ID=".$row['CommentID']." AND Type=2 AND Score=2",$conn));
+		$totalCommentPhil=mysql_num_rows(mysql_query("select * from tblScoring where ID=".$row['CommentID']." AND Type=2 AND Score=3",$conn));
+		$totalCommentDislike=mysql_num_rows(mysql_query("select * from tblScoring where ID=".$row['CommentID']." AND Type=2 AND Score=4",$conn));
+		$totalCommentHate=mysql_num_rows(mysql_query("select * from tblScoring where ID=".$row['CommentID']." AND Type=2 AND Score=5",$conn));
+		 */
+		$commentScore='';
+		if($totalCommentLove>0) $commentScore.=$totalCommentLove.' <img src="images/scoring/small/love.png" style="position:absolute;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+		if($totalCommentLike>0) $commentScore.=$totalCommentLike.' <img src="images/scoring/small/like.png" style="position:absolute;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+		if($totalCommentPhil>0) $commentScore.=$totalCommentPhil.' <img src="images/scoring/small/philosopher.png" style="position:absolute;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+		if($totalCommentDislike>0) $commentScore.=$totalCommentDislike.' <img src="images/scoring/small/dislike.png" style="position:absolute;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+		if($totalCommentHate>0) $commentScore.=$totalCommentHate.' <img src="images/scoring/small/hate.png" style="position:absolute;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+		$commentScore=substr($commentScore,0,-6);
+		// SELECT TOTAL SCORES OF EACH KIND FOR THIS COMMENT
+
+		$myScore='';
+		if(!$loggedin) {
+			$scoring="select * from tblScoring where ID=".$row['CommentID']." AND Type=2 AND UserID=".$user;
+			$scoringRes=mysql_query($scoring,$conn);
+			if(mysql_num_rows($scoringRes)>0) { // IF THIS COMMENT WAS SCORED BY LOGGED IN USER
+				$scoringRow=mysql_fetch_object($scoringRes);
+				if($scoringRow->Score=='1') $myScore='YOU SCORED&nbsp;&nbsp;<img src="images/scoring/small/love.png" style="position:absolute; margin-top:-5px;">';
+				if($scoringRow->Score=='2') $myScore='YOU SCORED&nbsp;&nbsp;<img src="images/scoring/small/like.png" style="position:absolute; margin-top:-5px;">';
+				if($scoringRow->Score=='3') $myScore='YOU SCORED&nbsp;&nbsp;<img src="images/scoring/small/philosopher.png" style="position:absolute; margin-top:-5px;">';
+				if($scoringRow->Score=='4') $myScore='YOU SCORED&nbsp;&nbsp;<img src="images/scoring/small/dislike.png" style="position:absolute; margin-top:-5px;">';
+				if($scoringRow->Score=='5') $myScore='YOU SCORED&nbsp;&nbsp;<img src="images/scoring/small/hate.png" style="position:absolute; margin-top:-5px;">';
+			}
+		}
+	
+		/* $ago='';
+		$diff=(_date_diff(time(), strtotime($row->CommentDate)));
+		if($diff[y]!=0) $ago=($diff[y]>1) ? $diff[y].' years ' : $diff[y].' year ';
+		elseif($diff[m]!=0) $ago=($diff[m]>1) ? $diff[m].' months ' : $diff[m].' month ';
+		elseif($diff[d]!=0) $ago=($diff[d]>1) ? $diff[d].' days ' : $diff[d].' day ';
+		elseif($diff[h]!=0) $ago=($diff[h]>1) ? $diff[h].' hours ' : $diff[h].' hour ';
+		elseif($diff[i]!=0) $ago=($diff[i]>1) ? $diff[i].' minutes ' : $diff[i].' minute ';
+		elseif($diff[s]!=0) $ago=($diff[s]>1) ? $diff[s].' seconds ' : $diff[s].' second ';
+		$ago.=' ago';
+		 */
+		$ago =  $this->agohelper($row['CommentDate']);
+		if($loggedin) { if($row['UserID']!='-1') { if($row['Status']==1) { $profilelinkstart='<a href="profile.php?user='.$row['UserID'].'">'; } else { $profilelinkstart='<a href="javascript:void(0)" class="profile-deactivated" title="'.DEACTIVE_ALT.'" onclick="return false;">'; } $profilelinkend='</a>'; } else { $profilelinkstart=''; $profilelinkend=''; } }
+
+		if($row['TwitterGPName']!='' && $row['CommentUser']=='-1') $TGPN='<span style="font-style:normal; color:#999"> - Twitter @'.$row['TwitterGPName'].'</span>'; else $TGPN='';
+
+//		$return.='<div class="dbee-feed"><div style="float:left; width:80px; height:80px; margin-left:0px;"><img src="/images/default_profilepic.png"></div><div style="float:left; width:510px;"><div style="font-weight:bold; font-size:12px;">Name</div><div>'.$row->Comment.'</div><div style="font-size:10px; font-weight:bold; margin-top:10px;">'.$ago.'</div></div><br style="clear:both; font-size:1px;" /></div>';
+
+
+				$return.='<div id="comment-block-'.$row['CommentID'].'" class="comment-list" '.$no_bottom_border.'><div style="float:left; width:80px; height:80px; margin-left:10px;">'.$profilelinkstart.'<img src="/show_thumbnails.php?ImgName='.$row['ProfilePic'].'&ImgLoc=userpics&Width=60&Height=60" border="0" />'.$profilelinkend.'</div>';
+				$return.='<div id="dbcomment-speechwrapper" class="dbcomment-speechwrapper" onmouseover="javascript:comment_speecharrowover('.$row['CommentID'].')" onmouseout="javascript:comment_speecharrowout('.$row['CommentID'].')"><div id="dbcomment-speecharrow-'.$row['CommentID'].'" class="dbcomment-speecharrow"></div><div style="width:555px; margin:-7px 0 0 20px;"><div><div style="float:left; font-weight:bold; font-size:12px; margin-bottom:5px;">'.$profilelinkstart.$row['Name'].$profilelinkend.$TGPN;
+				if($isPoll)
+					$return.=' voted '.$uservote;
+				$return.='</div><div id="comment-score'.$row['CommentID'].'" style="float:right; width:100px; height:auto; text-align:center; color:#FF3333">'.$myScore.'</div></div>';
+				$return.='<div class="next-line"></div>';
+				if($row['Type']=='1') {
+					$return.='<div class="justify-text" style="margin:0 10px 0 0px;">'.$this->MakeClickablelinkshelper($row['Comment']).'</div>';
+				}
+				elseif($row['Type']=='2') {
+					$return.='<div style="float:left; width:560px; margin:0 10px 0 0;"><div>'.$row['UserLinkDesc'].'</div><div style="width:530px; padding:5px; margin-top:5px; margin-bottom:5px; background-color:#DAD9D9;"><div>'.$row['LinkTitle'].' - <a href="'.$row['Link'].'" target="_blank">'.$row['Link'].'</a></div><div style="margin-top:10px;">'.$row['LinkDesc'].'</div></div></div>';
+				}
+				elseif($row['Type']=='3') {
+					$return.='<div style="float:left; width:560px; margin:0 10px 0 0;"><div style="float:left; margin-top:5px; width:auto; margin-bottom:5px; padding:3px; border:1px solid #CCCCCC;"><a href="imageposts/'.$row['Pic'].'" rel="shadowbox"><img src="/show_thumbnails.php?ImgName='.$row['Pic'].'&ImgLoc=imageposts&Width=120&Height=120" border="0" /></a></div><div style="float:left; margin-left:10px; width:420px;">'.$row['PicDesc'].'</div></div>';
+				}
+				elseif($row['Type']=='4') {
+					if($row['Vid']!='') {
+						$atag='<a href="javascript:seevideo(\''.$row['VidID'].'\');">';
+						$mediaicon='<div class="icon-youtube" style="margin:-2px 20px 0 -30px;; height:30px;"></div>';
+						if($row['VidSite']=='Youtube')
+							$VideoThumbnail='<img src="http://i.ytimg.com/vi/'.$row['VidID'].'/0.jpg" width="120" height="100" border="0" />';
+						elseif($row['VidSite']=='Vimeo')
+						{
+							$url = 'http://vimeo.com/api/v2/video/'.$row['VidID'].'.php';
+							$contents = @file_get_contents($url);
+							$thumb = @unserialize(trim($contents));
+				
+							$VideoThumbnail="<img src=".$thumb[0][thumbnail_small].">";
+						}
+						elseif($row['VidSite']=='Dailymotion')
+							$VideoThumbnail='<img src="http://www.dailymotion.com/thumbnail/video/'.$row['VidID'].'" width="120" height="100" border="0" />';
+					} elseif($row['Audio']!='') {
+						$atag='<a href="javascript:seeaudio(\''.$row['CommentID'].'\');">';
+						$VideoThumbnail='<img src="images/soundcloud.png">';
+						$mediaicon='<div class="icon-soundcloud" style="margin:3px 20px 0 -30px; height:30px;"></div>';
+					}
+					$return.='<div style="float:left; width:560px; margin:0 10px 0 0;"><div style="float:left; margin-right:10px; width:120px; margin-bottom:5px; padding:3px; border:1px solid #CCCCCC;">'.$atag.$VideoThumbnail.'</a></div><div style="float:left; width:420px;">'.$row['VidDesc'].'</div></div>';
+				}
+			
+			if($row['TwitterComment']!='') {
+				$return.="<div class='next-line'></div><div id='tweet-block-".$row['CommentID']."' class='twitter-post-tag-comments' style='width:480px; padding:10px; min-height:50px; margin-top:10px;'><div class='twitter-bird'></div><div>".str_replace('%26','&',$row['TwitterComment'])."</div>";
+/*	
+				// ADD CONTROLS TO REMOVE TWEET IF DB ADMIN
+				if($ProfileHolder) $phc=1; else $phc=0;
+				if($DbOwner) {
+					$return.='<a href="#?w=330" rel="removetweet-popup" class="poplight" onclick="javascript:fillremovetweetpopup('.$row['CommentID'].','.$row->UserID.','.$row->DbeeOwner.','.$phc.');"><div style="float:right; margin-top:10px;" title="remove tweet">remove tweet</div></a>';
+				}
+				$return.="<br style='clear:both'></div>";
+				// ADD CONTROLS TO REMOVE TWEET IF DB ADMIN
+			}
+*/			
+			}
+			$return.="<br style='clear:both'></div>";
+
+			$return.='<div class="next-line"></div><div style="font-size:10px; color:#666; margin:0 10px 5px 20px; width:auto;"><div style="float:left;">'.$ago.'</div><div style="float:left; margin:0 20px 10px 20px;">'.$commentScore.'</div>';
+				if(!$ProfileHolder) {
+					if($loggedin) {
+						$return.='<div style="float:left; margin-left:10px;"><a href="javascript:void(0);" id="scorecomment'.$counter.'" onclick="javascript:OpenShadowbox(\'scorecomment.php?comment='.$row['CommentID'].'\',\'\',\'285\',\'235\');">score comment</a> | <a href="javascript:void(0);" onclick="javascript:OpenShadowbox(\'reportabuse.php?db='.$db.'&comment='.$row['CommentID'].'&type=2\',\'\',\'300\',\'400\');">report abuse</a></div>';
+					}
+				}
+				else {
+					if(!$isPoll) {
+						$return.='<div style="float:right; margin-right:8px;"><a href="#?w=300" rel="removecomment-popup" class="poplight" onclick="javascript:fillremovecommentpopup('.$row['CommentID'].','.$row['UserID'].');"><div class="icon-delete" style="float:right; margin-top:10px;" title="remove my comment"></div></a></div>';
+					}
+				}
+/*	
+				// ADD REMOVE COMMENT CONTROL FOR DB ADMIN
+				if($DbOwner && !$ProfileHolder) {
+					$return.='<div style="float:right; margin-right:8px;"><a href="#?w=330" rel="removecomment-popup" class="poplight" onclick="javascript:fillremovecommentpopup('.$row['CommentID'].','.$row->UserID.',\'1\','.$row->DbeeOwner.');">remove comment</a>';
+				}
+	
+				if($row->UserID!='-1') {
+					if($DbOwner && !$ProfileHolder) {
+						if(!$userBlocked)
+							$return.=' | <span class="blockuser-'.$row->UserID.'"><a href="#?w=400" rel="blockuser-popup" class="poplight" onclick="javascript:fillblockuserpopup('.$row->UserID.','.$row->DbeeOwner.','.$db.');"><span style="color:#F40B0B">Block</span></a></span>';
+						else
+							$return.=' | <span class="blockuser-'.$row->UserID.'"><a href="javascript:void(0);" onclick="javascript:unblockuser('.$row->UserID.','.$row->DbeeOwner.','.$db.');"><span style="color:#EB8649">Unblock</span></a></span>';
+					}
+				}
+				$return.='</div><br style="clear:both; font-size:1px;" /></div>';
+				// ADD REMOVE COMMENT CONTROL FOR DB ADMIN
+*/	
+				// **********************************************************
+				// ADD REMOVE COMMENT/BLOCK USER CONTROLS FOR DB SUPER ADMIN
+				if($user=='32') {
+					$return.='<div style="float:right; margin-right:8px;"><a href="#?w=330" rel="removecomment-popup" class="poplight" onclick="javascript:fillremovecommentpopup('.$row_comments->CommentID.','.$row_comments->UserID.',\'1\','.$row_comments->DbeeOwner.');">remove comment</a>';
+		
+					if($row_comments->UserID!='-1') {
+						if(!$userBlocked)
+							$return.=' | <span class="blockuser-'.$row_comments->UserID.'"><a href="#?w=400" rel="blockuser-popup" class="poplight" onclick="javascript:fillblockuserpopup('.$row_comments->UserID.','.$row_comments->DbeeOwner.','.$db.');"><span style="color:#F40B0B">Block</span></a></span>';
+						else
+							$return.=' | <span class="blockuser-'.$row_comments->UserID.'"><a href="javascript:void(0);" onclick="javascript:unblockuser('.$row_comments->UserID.','.$row_comments->DbeeOwner.','.$db.');"><span style="color:#EB8649">Unblock</span></a></span>';
+					}
+					$return.='</div><br style="clear:both; font-size:1px;" /></div>';
+				} else $return.='<br style="clear:both; font-size:1px;" /></div>';
+				// ADD REMOVE COMMENT/BLOCK USER CONTROLS FOR DB SUPER ADMIN
+				// **********************************************************
+
+				$return.='</div></div></div>';
+				$return.='<input type="hidden" id="commentsortorder"><input type="hidden" id="currcommentsortorder">';
+
+		$counter++;
+	endforeach;
+
+	
+		$return.='<div id="see-more-comments'.$this->startnew.'"><div id="more-comments-loader" style="padding:10px; cursor:pointer; color:#333333; text-align:center;" onclick="javascript:seemorecomments('.$startnew.',20,'.$db.');">'.$seemorelabel.'</div></div>';
+	
+}
+else {	
+	
+	$return.='<div align="center"> -no more comments -</div>';
+}
+
+/* if(isset($this->reload))
+	echo $return;
+else */
+
+	echo $return.'~#~'.$startnew.'~#~'.$sendsortorder.'~#~'.$sortorder;
+?>

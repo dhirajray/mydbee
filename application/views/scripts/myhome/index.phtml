@@ -1,0 +1,150 @@
+<!-- content start  -->
+<script>
+function reloadFeeds() {
+	var end=document.getElementById('reloadend').value;
+	end=parseInt(end)+15;
+	<? if(eregi("chrome", $_SERVER['HTTP_USER_AGENT'])) { ?>
+	$('#dbee-feeds').load('/myhome/dbeereload', function() { fadepopup(); openFadePopup();});
+	<? } else { ?>
+	//$('#dbee-feeds').fadeOut('slow').load('ajax_dbeefeeds.php?check=0&reload=1&end='+end, function() { fadepopup(); openFadePopup(); Shadowbox.init(); Shadowbox.setup(); }).fadeIn("slow");
+	$('#dbee-feeds').fadeOut('slow').load('myhome/dbeereload/5', function() { fadepopup(); openFadePopup(); Shadowbox.init(); Shadowbox.setup(); }).fadeIn("slow");
+	<? } ?>
+}
+<?
+$ProfilePic=$row['ProfilePic'];
+$ShowPPBox=$row['ShowPPBox'];
+?>
+var DbeeFeedHttp;
+function dbeefeedresult()
+{
+	if(DbeeFeedHttp.readyState==4)
+	{			
+		if(DbeeFeedHttp.status == 200 || DbeeFeedHttp.status == 0)
+		{
+			var result=DbeeFeedHttp.responseText;
+			var resultArr=result.split('~#~');
+			if(resultArr[0]=='1') {
+				var feedtype=document.getElementById('feedtype').value;
+				if(feedtype=='all') {
+				<? //if(!is_ie()) { ?>
+				//	reloadFeeds();
+				<?// } else { ?>
+					//fetchintialfeeds(0);
+				<?// } ?>
+					reloadFeeds();	
+				}
+			}
+		}
+		else {}
+	}
+}
+
+setInterval(function() {
+		var end=document.getElementById('reloadend').value;
+		end=parseInt(end)+5;
+		DbeeFeedHttp=Browser_Check(DbeeFeedHttp);
+		
+		var url="/myhome/dbeechk";
+		var data="check=1&start="+end;
+		
+		DbeeFeedHttp.open("POST",url,true);
+		DbeeFeedHttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+		DbeeFeedHttp.setRequestHeader("Content-length", data.length);
+		DbeeFeedHttp.setRequestHeader("Connection", "close");
+
+		DbeeFeedHttp.onreadystatechange = dbeefeedresult;
+		DbeeFeedHttp.send(data);
+	}, 2000);
+
+setInterval("chknewfollowingdb(1)",2000);
+
+$(function() {
+	fetchintialfeeds();
+	chknewfollowingdb(<?=$n;?>);
+	chktopnotification(<?=$n;?>);
+	<? if($ShowPPBox=='1' && ($ProfilePic=='default-avatar.jpg' || $ProfilePic=='default-avatar-female.jpg')) { ?>
+	setTimeout("uploadprofilepicbox('<?=$ProfilePic?>')",5000);
+	<? } ?>
+	$('#dbee-feed-displayby').mouseover(function(event) {
+		document.getElementById('display-by-options').style.display='block';
+	}).mouseout(function(){
+		document.getElementById('display-by-options').style.display='none';
+	});
+
+	$('#dbee-feed-category').mouseover(function(event) {
+		document.getElementById('category-options').style.display='block';
+	}).mouseout(function(){
+		document.getElementById('category-options').style.display='none';
+	});
+
+	fillcategory();
+	filldisplayby();
+});
+</script>
+<!-- head_myhome start  -->
+<? //include 'head_myhome.php'; ?>
+<!-- head_myhome end  -->
+<? //include 'inc_google.php'; ?>
+
+<script type="text/javascript">
+$(window).scroll(function(){
+	var feedtype=document.getElementById('feedtype').value;
+	if  ($(window).scrollTop() == $(document).height() - $(window).height()){
+	   if(feedtype=='all') { var mystart=document.getElementById('startnewall').value; seemorefeeds(mystart,5); }
+	   else if(feedtype=='mydbs') { var mystart=document.getElementById('startnewmydb').value; seemoremyfeeds(mystart,5,1); }
+	   else if(feedtype=='mycomments') { var mystart=document.getElementById('startnewmycomments').value; seemoremycomments(mystart,5); }
+	   else if(feedtype=='following') { var mystart=document.getElementById('startnewfollowing').value; seemorefollowing(mystart,5); }
+	   else if(feedtype=='favourite') { var mystart=document.getElementById('startnewfav').value; seemorefavourites(mystart,5); }
+	   else if(feedtype=='mostcommented') { var mystart=document.getElementById('startnewmc').value; seemoremostcommented(mystart,5); }
+	   else if(feedtype=='cat') { var mystart=document.getElementById('startnewcat').value; var mycat=document.getElementById('filtercat').value; seemorecat(mystart,5,mycat); }
+	   else if(feedtype=='type') { var mystart=document.getElementById('startnewtype').value; var mytype=document.getElementById('filtertype').value; seemoretype(mystart,5,mytype); }
+	   else if(feedtype=='filter') { var mystart=document.getElementById('startnewfilter').value; var myscore=document.getElementById('filterscore').value; seemorefilterdb(mystart,5,myscore); }
+	}
+});
+</script>
+
+</head>
+
+<body>
+<!-- top start  -->
+<? include 'top.php'; ?>
+<!-- top end  -->
+<div id="Middle">
+	<div id="MiddleTopPost">
+		<a href="/myhome"><div id="Logo" style="margin-bottom:20px;"></div></a>
+		<div class="next-line"></div>
+		<? include "inc_postdbee.php"; ?>
+	<!-- top end  </div>-->
+	<div class="next-line"></div>
+	<div id="MiddleLeft">
+		<div id="dbees-feeds-wrapper" style="margin-top:-8px">
+			<? if(!eregi("Mac OS", $_SERVER['HTTP_USER_AGENT'])) $mlcontrols='20px'; else $mlcontrols='15px'; ?>
+			<div class="home-dbfeed-controls-wrapper" style="float:left; margin:0 0 20px 5px;"><div id="all-dbees-home" class="feed-link-active" style="float:left; margin-left:10px;" onclick="javascript:fetchintialfeeds()">all</div><div id="my-dbees-home" class="feed-link" style="margin-left:<?=$mlcontrols?>; float:left;" onclick="javascript:seedbeelist(<?php echo $_COOKIE['user']?>,1)">my dbs</div><div id="my-comments-home" class="feed-link" style="margin-left:<?=$mlcontrols?>; float:left;" onclick="javascript:dbfeedmycomments()">my comments</div><br style="clear:both"></div>
+			<div class="home-dbfeed-controls-wrapper" style="width:445px; float:left; margin-left:10px; margin-bottom:30px;"><div style="float:left"><div id="dbee-feed-following" class="feed-link" style="float:left; margin-left:10px;" onclick="javascript:dbfeedfollowing()" title="view your following dbs">following</div><div style="position:absolute"><div id="newdbcount-wrapper" class="notificationcount noshadow" style="text-align:center; left:75px; top:-25px;"><div id="newdbcount" style="margin-top:-3px;"></div><div class="speech-arrow-following"></div></div></div><div id="icon-dbfeed-buzz-following" class="icon-dbfeed-buzz" style="margin-right:25px"></div></div><div style="float:left"><div id="dbee-feed-favourite" class="feed-link" style="margin-left:20px; margin-right:35px; float:left;" onclick="javascript:dbfeedfavourite()">my favourites</div></div><div id="dbee-feed-category" class="feed-link" style="margin-left:20px; float:left; cursor:default; text-decoration:none;">category<div id="category-options" class="feed-options-drop"></div></div><div class="displayby-downarrow" style="float:left; margin-right:25px;"></div><div style="float:left" id="filter-label"></div><div class="displayby-downarrow" style="margin-right:10px;"></div><div id="dbee-feed-displayby" class="feed-link" style="float:right; cursor:default; text-decoration:none;">display by<div id="display-by-options" class="feed-options-drop"></div></div><br style="clear:both"></div>
+
+			<div class="next-line"></div>
+			<div id="dbee-feeds"></div>
+		</div>
+	</div>
+	<div id="MiddleRight">
+		<? include 'right_home.php'; ?>
+	</div>
+	<div class="next-line"></div>
+</div>
+<!-- footer start  -->
+<? //include 'footer.php'; ?>
+<!-- footer end  -->
+<!-- SCRIPT FOR FADE POPUP -->
+<div id="redb-popup" class="popup_block">DB successfully posted on your profile</div>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.1/jquery.min.js"></script>
+<script type="text/javascript">
+var jqnc=jQuery.noConflict();
+jqnc(document).ready(function(){
+	fadepopup();
+});
+
+dropdowncontent.init("filter-feed", "left-bottom", 200, "mouseover");
+</script>
+<!-- SCRIPT FOR FADE POPUP -->
+
+<div id="deletepost-popup" class="popup_block">Do you really want to delete this db?<br /><br /><div id="deletedb-controls"></div></div>

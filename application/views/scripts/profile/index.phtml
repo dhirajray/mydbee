@@ -1,0 +1,143 @@
+<script>
+
+$(function() {	
+			seeuserprofile('<?php echo $this->userid;?>',0);
+	/*		$(document.body).animate({
+			'scrollTop':$('#feedcontrols').offset().top
+		}, 2000);
+*/ 
+
+			seedbeelist('<?php echo $this->userid;?>');
+			fillgroupfeedoptions('<?php echo $this->userid;?>');
+
+		$('#my-groups-profile').mouseover(function(event) {
+			document.getElementById('groupfeed-profile-options').style.display='block';
+		}).mouseout(function(){
+			document.getElementById('groupfeed-profile-options').style.display='none';
+		});
+	
+	// initialize twitter advanced search options
+//	$(".slidingTwitterSearch").hide();
+	$('#toggle-twitter-asearch').click(function(){
+		$(".slidingTwitterSearch").slideToggle('fast');
+		if(document.getElementById('toggle-twitter-asearch').className=='twitter-search-arrow-closed')
+			document.getElementById('toggle-twitter-asearch').className='twitter-search-arrow-open';
+		else
+			document.getElementById('toggle-twitter-asearch').className='twitter-search-arrow-closed'
+	});
+	// initialize twitter advanced search options
+});
+
+// Create the tooltips only on document load
+//$(document).ready(function() 
+
+//});
+
+function createdrop(start,end) {
+	for(i=start;i<=end;i++) {
+		dropdowncontent.init("scorecomment"+i, "left-bottom", 100, "mouseover");
+	}
+}
+
+function changeHistory() {
+	var box=document.getElementById('historyMonths');
+	var month=box.options[box.selectedIndex].value;
+	seehistorylist(<?php echo $this->userid;?>,month);
+}
+
+	$(window).scroll(function(){
+		var feedtype=document.getElementById('feedtype').value;
+		if  ($(window).scrollTop() == $(document).height() - $(window).height()) {
+			if(feedtype=='mydbs') {
+				var totaldbees=document.getElementById('totaldbees').value;
+				if(totaldbees>5) {
+					var mystart=document.getElementById('startnewmydb').value;
+					seemoremyfeeds(mystart,5);
+				}
+			}
+			else if(feedtype=='myredbs') {
+				var totalredbees=document.getElementById('totalredbees').value;
+				if(totalredbees>5) {
+					var mystart=document.getElementById('startnewmyredb').value;
+					seemoremyfeeds(mystart,5); 
+				}
+			}
+			else if(feedtype=='mycomments') {
+				var mystart=document.getElementById('startnewmycomments').value;
+				seemoremycomments(mystart,5,<?php echo $this->userid;?>);
+			}
+		}
+	});
+</script>
+</head>
+
+<body>
+<!-- top start  -->
+<? include 'top.php'; ?>
+<!-- top end  -->
+<div id="Middle">
+	<div id="MiddleTopPost">
+		<a href="<?php echo $this->serverurl(); ?>/myhome"><div id="Logo" style="margin-bottom:20px;"></div></a><div class="startnewdb" onclick="javascript:openpostdb()">new db</div>		<div class="next-line"></div>
+				<!--
+		<div class="closed-dbee-wrapper">
+			<div class="closed-dbee">Closed by author</div>
+		</div>
+		<div class="next-line"></div>
+		--->
+				<div id="dbee-highlighted-wrapper">
+					<div id="profile-highlighted"></div>
+			<div class="next-line"></div>
+				</div>
+	</div>
+		<div id="MiddleLeft">
+		<div id="dbees-feeds-wrapper" style="margin-top:-10px; ">
+			<a name="feedcontrols" id="feedcontrols"></a>
+			<div id="maindb-wrapper" class="maindb-wrapper ">
+							<div class="home-dbfeed-controls-wrapper" style="width:655px; float:left; margin-left:10px; margin-bottom:30px;"><div class="small-font-bold profile-seemy">My</div><div id="my-dbees-profile" class="feed-link feed-link-border" style="float:left;" onclick="javascript:seedbeelist(<?php echo $this->userid;?>)" title="My dbs">dbs</div><div id="my-redbees-profile" class="feed-link feed-link-border" style="float:left;" onclick="javascript:seeredbeelist(<?php echo $this->userid;?>)">re dbs</div><div id="my-comments-profile" class="feed-link feed-link-border" style="float:left;" onclick="javascript:dbfeedmycomments(1,<?php echo $this->userid;?>)">comments</div><div id="my-leaguepos-profile" class="feed-link feed-link-border" style="float:left;" onclick="javascript:OpenShadowbox('/profile/league','','600','710');">league positions</div><div id="my-followers-profile" class="feed-link feed-link-border" style="float:left;" onclick="javascript:OpenShadowbox('/following/followeruser','','325','630');">followers</div><div id="my-following-profile" class="feed-link feed-link-border" style="float:left;" onclick="javascript:OpenShadowbox('following/followinguser','','325','630');">following</div><div id="my-groups-profile" class="feed-link" style="float:left; padding-left:17px">groups<div id="groupfeed-profile-options" class="feed-options-drop"></div></div><div class="displayby-downarrow" style="float:left"></div><br style="clear:both"></div>
+				<div class="next-line"></div>
+				<div id="my-dbees"></div>
+				<div class="next-line"></div>
+								<input type="hidden" id="dbeetype">
+				<input type="hidden" id="dbid" value="0">
+				<input type="hidden" id="reloadend">
+				<input type="hidden" id="profileuser" value="<?php echo $this->userid;?>">
+				<input type="hidden" id="totalcomments">
+				<input type="hidden" id="totaldbees">
+				<input type="hidden" id="feedtype">
+				<input type="hidden" id="startnew" value="20">
+				<input type="hidden" id="startnewmydb" value="5">
+				<input type="hidden" id="startnewmyredb" value="5">
+				<input type="hidden" id="startnewmycomments" value="5">
+			</div>
+		</div>
+	</div>
+	<div id="MiddleRight">
+					</div>
+		<br style="clear:both; font-size:1px;" />
+</div>
+<? include 'footer.php'; ?>
+
+<!-- SCRIPT FOR FADE POPUP -->
+<div id="joingroup-popup" class="popup_block">Request sent to group admin.</div>
+<div id="follow-popup" class="popup_block"></div>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.1/jquery.min.js"></script>
+<script type="text/javascript">
+var jqnc=jQuery.noConflict();
+jqnc(document).ready(function(){
+	fadepopup();
+});
+</script>
+<!-- SCRIPT FOR FADE POPUP -->
+
+<div id="deletepost-popup" class="popup_block">Do you really want to delete this db?<br /><br /><div id="deletedb-controls"></div></div>
+<div id="deleteredb-popup" class="popup_block">Do you really want to remove this db from your profile?<br /><br /><div id="deleteredb-controls"></div></div>
+<div id="commentnotify-popup" class="popup_block"></div>
+<div id="removetweet-popup" class="popup_block"></div>
+<div id="removecommentother-popup" class="popup_block"></div>
+<div id="removecomment-popup" class="popup_block"></div>
+<div id="blockuser-popup" class="popup_block"></div>
+<div id="unblockuser-popup" class="popup_block"></div>
+</body>
+</html>
+
+

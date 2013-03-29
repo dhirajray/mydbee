@@ -1,0 +1,94 @@
+            <?php   
+       $IDs = '';
+      // echo   $TotalDbees;
+     $startnew =$this->startnew;
+        if(count($this->favouritesdbees) > 0) {
+        	 $k=1;        
+        	 if(strlen($row->Text)>250) $dots='...'; else $dots='';
+         if($k=='1' && $initial=='1') setcookie("CookiePostDate", $row->PostDate, time()+3600);
+         if($k=='1' && $initial=='1') setcookie("CookieLastActivity", $row->LastActivity, time()+3600);
+         foreach ($this->favouritesdbees as $row) :
+         $agodk = $this->agohelper($this->escape($row['PostDate']));
+         $CommentsNum = $row['cnt'];         
+         $IDs .= $row['DbeeID'].',';
+         if($k=='1') setcookie("CookieLastActivity", $row['LastActivity'], time()+3600);
+         if($CommentsNum>1) $commentago = $this->commentagohelper($this->escape($row['CommentDate']));        
+         $type = $this->escape($row['Type']);
+         $favid = $this->escape($row['DbeeID']);
+         $userStatus=$row['Status'];
+         if($userStatus==1) $profileLinkStart='<a href="profile/index/id/'.$row['UserID'].'">';
+         else $profileLinkStart='<a href="javascript:void(0)" class="profile-deactivated" title="'.DEACTIVE_ALT.'" onclick="return false;">';
+             if($type =='1') {
+				$return.='<div class="dbee-feed-wrapper"><div style="float:left; width:80px; height:80px; margin-left:20px;"><img src="show_thumbnails.php?ImgName='.$this->escape($row['ProfilePic']).'&ImgLoc=userpics&Width=60&Height=60" border="0" /></div><div class="dbee-feed" onmouseover="javascript:speecharrowover('. $favid.')" onmouseout="javascript:speecharrowout('. $favid.')" onclick="document.location.href=\'myhome/dbeedetail/id/'. $favid.'\'"><div class="dbee-feed-titlebar"><div id="speecharrow-'. $favid.'" class="speech-arrow"></div><div class="'.$dbstate.'" title="'.$dbstatetitle.'"></div><div style="float:left; margin-top:5px;">'.$profileLinkStart.$this->escape($this->escape($row['Name'])).'</a></div><div class="icon-db-text"></div><div style="float:left; margin-top:5px;"><span style="font-size:9px;">'.$agodk.'</span>&nbsp;&nbsp;&nbsp;<span class="dbee-feed-titlebar-smallFont">'.$CommentsNum.' comments</span><span class="dbee-feed-titlebar-smallFont" style="margin-left:10px;">'.$commentago.'</span></div><div class="dbee-feed-titlebar-smallFont dbee-feed-titlebar-seelink"><a href="myhome/dbeedetail/id/'. $favid.'">see db</a></div><br style="clear:both; font-size:1px;" /></div><div id="collapse'. $favid.'"><div style="float:left; width:auto;"><div style="width:560px; margin:0 10px 0 10px;">'.$GroupText.'<div class="next-line"></div><span class="font12">'.substr($this->escape($row['Text']),0,250).$dots.'</span></div><div class="next-line"></div><div class="next-line"></div><div style="float:left">'.$twittertag.'</div><div class="dbfeed-bottom-links">'.$ActiveUsersLabel.' - <a href="#?w=300" rel="redb-popup" class="poplight" onclick="javascript:redbee('. $favid.','.$this->escape($row['User']).')" alt="re db" title="re db">re db</a> - <a href="javascript:void(0)" rel="favourite-popup~300" class="poplight" onclick="javascript:addtofavourite('. $favid.','.$this->escape($row['User']).')" alt="add to favourites" title="add to favourites">add to favs</a>&nbsp;&nbsp;</div><div class="next-line"></div>'.$HideUserLabel.'</div><br style="clear:both; font-size:1px;" /></div></div></div>';
+				
+         }
+			elseif($type =='2') {  
+				if($this->escape($row['UserLinkDesc'])!='') $LinkInfo=substr($this->escape($row['UserLinkDesc']),0,200); else $LinkInfo='';
+				if(strlen($this->escape($row['UserLinkDesc']))>200) $dots='...'; else $dots='';
+				$return.='<div class="dbee-feed-wrapper"><div style="float:left; width:80px; height:80px; margin-left:20px;"><img src="show_thumbnails.php?ImgName='.$this->escape($row['ProfilePic']).'&ImgLoc=userpics&Width=60&Height=60" border="0" /></div><div class="dbee-feed" onmouseover="javascript:speecharrowover('. $favid.')" onmouseout="javascript:speecharrowout('. $favid.')" onclick="document.location.href=\'myhome/dbeedetail/id/'. $favid.'\'"><div class="dbee-feed-titlebar"><div id="speecharrow-'. $favid.'" class="speech-arrow"></div><div class="'.$dbstate.'" title="'.$dbstatetitle.'"></div><div style="float:left; margin-top:5px;">'.$profileLinkStart.$this->escape($row['Name']).'</a></div><div class="icon-db-link"></div><div style="float:left; margin-top:5px;"><span style="font-size:9px;">'.$agodk.'</span>&nbsp;&nbsp;&nbsp;<span class="dbee-feed-titlebar-smallFont">'.$CommentsNum.'comments</span><span class="dbee-feed-titlebar-smallFont" style="margin-left:10px;">'.$commentago.'</span></div><div class="dbee-feed-titlebar-smallFont dbee-feed-titlebar-seelink"><a href="myhome/dbeedetail/id/'. $favid.'">see db</a></div><br style="clear:both; font-size:1px;" /></div><div class="next-line"></div><div id="collapse'. $favid.'"><div style="float:left; width:560px; margin:0 10px 0 10px;">'.$GroupText.'<div class="next-line"></div><div class="font12">'.$LinkInfo.$dots.'</div><div style="padding:5px; margin-top:5px; margin-bottom:5px; background-color:#DAD9D9;"><div class="font12">'.$this->escape($row['LinkTitle']).' - <a href="'.$this->escape($row['Link']).'" target="_blank">'.$this->escape($row['Link']).'</a></div><div style="margin-top:10px;" class="font12">'.$this->escape($row['LinkDesc']).'</div></div></div><div class="next-line"></div><div style="float:left">'.$twittertag.'</div><div class="dbfeed-bottom-links">'.$ActiveUsersLabel.' - <a href="#?w=300" rel="redb-popup" class="poplight" onclick="javascript:redbee('. $favid.','.$this->escape($row['User']).')" alt="re db" title="re db">re db</a> - <a href="javascript:void(0)" rel="favourite-popup~300" class="poplight" onclick="javascript:addtofavourite('. $favid.','.$this->escape($row['User']).')" alt="add to favourites" title="add to favourites">add to favs</a>&nbsp;&nbsp;</div><div class="next-line"></div>'.$HideUserLabel.'</div><br style="clear:both; font-size:1px;" /></div></div></div>';
+			}
+			elseif($type =='3') {
+				if($this->escape($this->escape($row['PicDesc']))!='') $PicDesc=substr($this->escape($row['PicDesc']),0,250); else $PicDesc='';
+				if(strlen($this->escape($row['PicDesc']))>100) $dots='...'; else $dots='';
+				$return.='<div class="dbee-feed-wrapper"><div style="float:left; width:80px; height:80px; margin-left:20px;"><img src="show_thumbnails.php?ImgName='.$this->escape($row['ProfilePic']).'&ImgLoc=userpics&Width=60&Height=60" border="0" /></div><div class="dbee-feed" onmouseover="javascript:speecharrowover('. $favid.')" onmouseout="javascript:speecharrowout('. $favid.')" onclick="document.location.href=\'myhome/dbeedetail/id/'. $favid.'\'"><div class="dbee-feed-titlebar"><div id="speecharrow-'. $favid.'" class="speech-arrow"></div><div class="'.$dbstate.'" title="'.$dbstatetitle.'"></div><div style="float:left; margin-top:5px;">'.$profileLinkStart.$this->escape($row['Name']).'</a></div><div class="icon-db-pix"></div><div style="float:left; margin-top:5px;"><span style="font-size:9px;">'.$agodk.'</span>&nbsp;&nbsp;&nbsp;<span class="dbee-feed-titlebar-smallFont">'.$CommentsNum.' comments</span><span class="dbee-feed-titlebar-smallFont" style="margin-left:10px;">'.$commentago.'</span></div><div class="dbee-feed-titlebar-smallFont dbee-feed-titlebar-seelink"><a href="myhome/dbeedetail/id/'. $favid.'">see db</a></div><br style="clear:both; font-size:1px;" /></div><div class="next-line"></div><div id="collapse'. $favid.'"><div style="float:left; width:560px; margin:0 10px 0 10px;">'.$GroupText.'<div class="next-line"></div><div style="float:left; margin-top:5px; width:auto; margin-bottom:5px; padding:3px; border:1px solid #CCCCCC;"><a href="myhome/dbeedetail/id/'. $favid.'"><img src="show_thumbnails.php?ImgName='.$this->escape($row['Pic']).'&ImgLoc=imageposts&Width=120&Height=120" border="0" /></a></div><div style="float:left; margin-left:10px; width:420px;" class="font12">'.$PicDesc.$dots.'</div></div><div class="next-line"></div><div style="float:left">'.$twittertag.'</div><div class="dbfeed-bottom-links">'.$ActiveUsersLabel.' - <a href="#?w=300" rel="redb-popup" class="poplight" onclick="javascript:redbee('. $favid.','.$this->escape($row['User']).')" alt="re db" title="re db">re db</a> - <a href="javascript:void(0)" rel="favourite-popup~300" class="poplight" onclick="javascript:addtofavourite('. $favid.','.$this->escape($row['User']).')" alt="add to favourites" title="add to favourites">add to favs</a>&nbsp;&nbsp;</div><div class="next-line"></div>'.$HideUserLabel.'</div><br style="clear:both; font-size:1px;" /></div></div></div>';
+			}
+			elseif($type =='4') {
+				if($this->escape($row['Vid'])!='') {
+					$mediaicon='<div class="icon-youtube" style="margin:-2px 20px 0 -30px;; height:30px;"></div>';
+					if($this->escape($row['VidSite'])=='Youtube')
+						$VideoThumbnail='<img src="http://i.ytimg.com/vi/'.$this->escape($row['VidID']).'/0.jpg" width="120" height="100" border="0" />';
+					elseif($this->escape($row['VidSite'])=='Vimeo')
+					{
+						$url = 'http://vimeo.com/api/v2/video/'.$this->escape($row['VidID']).'.php';
+						$contents = @file_get_contents($url);
+						$thumb = @unserialize(trim($contents));
+			
+						$VideoThumbnail="<img src=".$thumb[0][thumbnail_small].">";
+					}
+					elseif($this->escape($row['VidSite'])=='Dailymotion')
+						$VideoThumbnail='<img src="http://www.dailymotion.com/thumbnail/video/'.$this->escape($row['VidID']).'" width="120" height="100" border="0" />';
+				} elseif($this->escape($row['Audio'])!='') {
+					$VideoThumbnail='<img src="images/soundcloud.png">';
+					$mediaicon='<div class="icon-soundcloud" style="margin:3px 20px 0 -30px; height:30px;"></div>';
+				}
+		
+				if(strlen($this->escape($row['VidDesc']))>350) $dots='...'; else $dots='';
+				$return.='<div class="dbee-feed-wrapper"><div style="float:left; width:80px; height:80px; margin-left:20px;"><img src="show_thumbnails.php?ImgName='.$this->escape($row['ProfilePic']).'&ImgLoc=userpics&Width=60&Height=60" border="0" /></div><div class="dbee-feed" onmouseover="javascript:speecharrowover('. $favid.')" onmouseout="javascript:speecharrowout('. $favid.')" onclick="document.location.href=\'myhome/dbeedetail/id/'. $favid.'\'"><div class="dbee-feed-titlebar"><div id="speecharrow-'. $favid.'" class="speech-arrow"></div><div class="'.$dbstate.'" title="'.$dbstatetitle.'"></div><div style="float:left; margin-top:5px;">'.$profileLinkStart.$this->escape($row['Name']).'</a></div><div class="icon-db-vidz"></div>'.$mediaicon.'<div style="float:left; margin-top:5px;"><span style="font-size:9px;">'.$agodk.'</span>&nbsp;&nbsp;&nbsp;<span class="dbee-feed-titlebar-smallFont">'.$CommentsNum.' comments</span><span class="dbee-feed-titlebar-smallFont" style="margin-left:10px;">'.$commentago.'</span></div><div class="dbee-feed-titlebar-smallFont dbee-feed-titlebar-seelink"><a href="myhome/dbeedetail/id/'. $favid.'">see db</a></div><br style="clear:both; font-size:1px;" /></div><div class="next-line"></div><div id="collapse'. $favid.'"><div style="float:left; width:560px; margin:0 10px 0 10px;">'.$GroupText.'<div class="next-line"></div><div style="float:left; margin-right:10px; width:120px; margin-bottom:5px; padding:3px; border:1px solid #CCCCCC;">'.$VideoThumbnail.'</div><div style="float:left; width:420px;" class="font12">'.substr($this->escape($row['VidDesc']),0,400).$dots.'</div></div><div class="next-line"></div><div style="float:left">'.$twittertag.'</div><div class="dbfeed-bottom-links">'.$ActiveUsersLabel.' - <a href="#?w=300" rel="redb-popup" class="poplight" onclick="javascript:redbee('. $favid.','.$this->escape($row['User']).')" alt="re db" title="re db">re db</a> - <a href="javascript:void(0)" rel="favourite-popup~300" class="poplight" onclick="javascript:addtofavourite('. $favid.','.$this->escape($row['User']).')" alt="add to favourites" title="add to favourites">add to favs</a>&nbsp;&nbsp;</div><div class="next-line"></div>'.$HideUserLabel.'</div><br style="clear:both; font-size:1px;" /></div></div></div>';
+			}
+			elseif($type =='5') {
+				//$stats='<div>';
+				//$totalvotes=mysql_num_rows(mysql_query("select * from tblPollVotes where PollID=". $favid,$conn));
+				//$pres=mysql_query('select * from tblPollOptions where PollID='. $favid,$conn);
+				//while($prow=mysql_fetch_object($pres)) {
+					//if($totalvotes>0) {
+					//	$total=mysql_num_rows(mysql_query("select * from tblPollVotes where Vote=".$prow->ID." AND PollID=". $favid,$conn));
+					//	$percent=($total/$totalvotes)*100;
+					//	$width=round($percent,1);
+					//	$stats.='<div><div class="pollstatsbar-wrapper"><div class="pollstatsbar" style="width:'.$width.'px;">';
+					//	if(round($percent)>0) $stats.='<span style="margin-left:0px;">'.round($percent,1).'%</span>'; else $stats.='';
+					//	$stats.='</div></div><div style="float:left; margin-bottom:8px;">'.$prow->OptionText.'</div></div><div class="next-line"></div>';
+					//} else {
+						$stats.='<div><div class="pollstatsbar-wrapper"></div><div style="float:left; margin-bottom:8px;">'.$this->escape($prow['OptionText']).'</div></div><div class="next-line"></div>';
+					//}
+				//}
+				$stats.='</div>';
+
+				$return.='<div class="dbee-feed-wrapper"><div style="float:left; width:80px; height:80px; margin-left:20px;"><img src="show_thumbnails.php?ImgName='.$this->escape($row['ProfilePic']).'&ImgLoc=userpics&Width=60&Height=60" border="0" /></div><div class="dbee-feed" onmouseover="javascript:speecharrowover('. $favid.')" onmouseout="javascript:speecharrowout('. $favid.')" onclick="document.location.href=\'myhome/dbeedetail/id/'. $favid.'\'"><div class="dbee-feed-titlebar"><div id="speecharrow-'. $favid.'" class="speech-arrow"></div><div class="'.$dbstate.'" title="'.$dbstatetitle.'"></div><div style="float:left; margin-top:5px;">'.$profileLinkStart.$this->escape($row['Name']).'</a></div><div class="icon-db-poll"></div><div style="float:left; margin-top:5px;"><span style="font-size:9px;">'.$agodk.'</span>&nbsp;&nbsp;&nbsp;<span class="dbee-feed-titlebar-smallFont">'.$CommentsNum.' votes</span><span class="dbee-feed-titlebar-smallFont" style="margin-left:10px;">'.$commentago.'</span></div><div class="dbee-feed-titlebar-smallFont dbee-feed-titlebar-seelink"><a href="myhome/dbeedetail/id/'. $favid.'">see db</a></div><br style="clear:both; font-size:1px;" /></div><div id="collapse'. $favid.'"><div style="float:left; width:auto;"><div style="width:560px; margin:0 10px 0 10px;"><div style="float:left; width:260px; margin:0 10px 0 0;" class="font12">'.substr($this->escape($row['PollText']),0,250).$dots.'</div><div style="float:right; width:270px;">'.$stats.'</div></div><div class="next-line"></div><div style="float:left">'.$twittertag.'</div><div class="dbfeed-bottom-links">'.$ActiveUsersLabel.' - <a href="#?w=300" rel="redb-popup" class="poplight" onclick="javascript:redbee('. $favid.','.$this->escape($row['User']).')" alt="re db" title="re db">re db</a> - <a href="javascript:void(0)" rel="favourite-popup~300" class="poplight" onclick="javascript:addtofavourite('. $favid.','.$this->escape($row['User']).')" alt="add to favourites" title="add to favourites">add to favs</a>&nbsp;&nbsp;</div><div class="next-line"></div>'.$HideUserLabel.'</div><br style="clear:both; font-size:1px;" /></div></div></div>';
+			}
+			$k++;
+        
+			 endforeach; 
+			 
+			 }
+			 else {
+			 	$startnew=$this->start;
+			 	$seemorelabel='- no more feeds to show -';
+			 }
+			 $IDs=substr($IDs,0,-1);
+			//if($TotalDbees>5) {
+			
+			 	$return.='<div id="see-more-feeds'.$startnew.'"><div id="more-feeds-loader" style="cursor:pointer; color:#333333; text-align:center;" onclick="javascript:seemorefeeds('.$startnew.',15);">'.$seemorelabel.'</div></div>';
+			// }
+			echo $return.'~#~'.$this->end.'~#~'.$IDs.'~#~'.$startnew;
+			 ?>
+     
